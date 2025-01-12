@@ -250,15 +250,26 @@ export default function UsagePage() {
                         <h3 className="text-xl font-semibold mb-2">{sample.title}</h3>
                         <p className="text-gray-600 mb-4">{sample.description}</p>
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                          <div className="bg-gray-50 p-4 rounded-lg">
-                            <h4 className="font-medium mb-2">コード</h4>
-                            <pre className="bg-gray-900 text-white p-4 rounded-lg overflow-x-auto">
+                          <div className="bg-gray-50 p-4 rounded">
+                            <h4 className="text-sm font-medium mb-2">コード例</h4>
+                            <pre className="text-sm overflow-auto p-2 bg-gray-100 rounded">
                               <code>{sample.code}</code>
                             </pre>
                           </div>
-                          <div className="bg-gray-50 p-4 rounded-lg">
-                            <h4 className="font-medium mb-2">プレビュー</h4>
-                            <Mermaid code={sample.code} />
+                          <div className="bg-gray-50 p-4 rounded">
+                            <h4 className="text-sm font-medium mb-2">プレビュー</h4>
+                            <div className="flex justify-center items-center">
+                              <img 
+                                src={`/diagrams/${sample.title === 'フローチャート' ? 'graph-LR' : 
+                                  sample.title === 'シーケンス図' ? 'sequenceDiagram' :
+                                  sample.title === 'クラス図' ? 'classDiagram' :
+                                  sample.title === 'ER図' ? 'diagram' :
+                                  'gantt'}.svg`} 
+                                alt={`${sample.title}のプレビュー`}
+                                className="max-w-full h-auto"
+                                loading="lazy"
+                              />
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -273,15 +284,25 @@ export default function UsagePage() {
                         <h3 className="text-xl font-semibold mb-2">{sample.title}</h3>
                         <p className="text-gray-600 mb-4">{sample.description}</p>
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                          <div className="bg-gray-50 p-4 rounded-lg">
-                            <h4 className="font-medium mb-2">コード</h4>
-                            <pre className="bg-gray-900 text-white p-4 rounded-lg overflow-x-auto">
+                          <div className="bg-gray-50 p-4 rounded">
+                            <h4 className="text-sm font-medium mb-2">コード例</h4>
+                            <pre className="text-sm overflow-auto p-2 bg-gray-100 rounded">
                               <code>{sample.code}</code>
                             </pre>
                           </div>
-                          <div className="bg-gray-50 p-4 rounded-lg">
-                            <h4 className="font-medium mb-2">プレビュー</h4>
-                            <PlantUML code={sample.code} />
+                          <div className="bg-gray-50 p-4 rounded">
+                            <h4 className="text-sm font-medium mb-2">プレビュー</h4>
+                            <div className="flex justify-center items-center">
+                              <img 
+                                src={`/diagrams/${sample.title === 'ユースケース図' ? 'Use-Case-Diagram' :
+                                  sample.title === 'アクティビティ図' ? 'Activity-Diagram' :
+                                  sample.title === 'コンポーネント図' ? 'Component-Diagram' :
+                                  'State-Diagram'}.svg`}
+                                alt={`${sample.title}のプレビュー`}
+                                className="max-w-full h-auto"
+                                loading="lazy"
+                              />
+                            </div>
                           </div>
                         </div>
                       </div>

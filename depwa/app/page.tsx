@@ -7,20 +7,29 @@ import dynamic from 'next/dynamic';
 import PlantUML from '@/components/plantuml';
 import { generateDiagram } from '@/lib/gemini';
 import { DiagramType } from '@/lib/types';
-import { Clipboard, Download } from 'lucide-react';
+import { Clipboard } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Loader2, Copy, RefreshCw, LightbulbIcon, Download } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 // シンタックスハイライター
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 const INITIAL_MERMAID_CODE = `graph TD
-    %% テストダイアグラム
+    %% カラーコードを含むテストダイアグラム
     A["開始"] --> B["処理1"]
     B --> C{"条件分岐"}
     C -->|"はい"| D["処理2"]
     C -->|"いいえ"| E["処理3"]
     D --> F["終了"]
-    E --> F`;
+    E --> F
+
+    %% スタイルの適用
+    style A fill:#f9f,stroke:#333,stroke-width:2px
+    style C fill:#bbf,stroke:#33f,stroke-width:2px
+    style F fill:#bfb,stroke:#3b3,stroke-width:2px`;
 
 // クライアントサイドでのみレンダリング
 const DynamicPlantUML = dynamic(() => import('@/components/plantuml'), { ssr: false });
@@ -43,12 +52,43 @@ const Mermaid = dynamic(() => import('@/components/mermaid'), {
   ),
 });
 
+// エラーメッセージの定義
+const DIAGRAM_ERRORS = {
+  syntax: {
+    title: '構文エラー',
+    description: '図の記法に誤りがあります。\n• 記号（矢印、括弧など）の使い方を確認してください\n• 長い文字列は改行してください\n• インデントを正しく設定してください'
+  },
+  connection: {
+    title: '通信エラー',
+    description: 'APIとの通信に失敗しました。\n• インターネット接続を確認してください\n• しばらく待ってから再度お試しください'
+  },
+  invalid: {
+    title: '入力エラー',
+    description: '入力内容が正しくありません。\n• 選択した図の種類に合わせた記法で入力してください\n• 必要な情報がすべて含まれているか確認してください'
+  }
+};
+
+// ヒントの定義
+const DIAGRAM_HINTS = {
+  title: '図の作成のヒント',
+  description: `1. まず、作成したい図の種類を選択します
+2. 図の要素（ノード、関係性など）を書き出します
+3. 要素間のつながりを矢印で表現します
+4. 必要に応じて、グループ化やスタイルを適用します
+5. プレビューを確認しながら、見やすさを調整します
+
+※ 複雑な図は、段階的に作成することをお勧めします。`
+};
+
 export default function Home() {
   const [prompt, setPrompt] = useState('');
   const [diagramType, setDiagramType] = useState<DiagramType>('mermaid');
   const [diagramCode, setDiagramCode] = useState(INITIAL_MERMAID_CODE);
   const [isLoading, setIsLoading] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
+  const [manualUpdate, setManualUpdate] = useState(false);
+  const [error, setError] = useState<keyof typeof DIAGRAM_ERRORS | null>(null);
+  const [showHint, setShowHint] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,8 +105,9 @@ export default function Home() {
     }
   };
 
-  const handleCodeChange = (value: string) => {
-    setDiagramCode(value);
+  const handleCodeChange = (newCode: string) => {
+    setDiagramCode(newCode);
+    setError(null);
   };
 
   const copyToClipboard = async () => {
@@ -125,9 +166,11 @@ export default function Home() {
           }
 
           img.onload = () => {
-            canvas.width = img.width;
-            canvas.height = img.height;
-            ctx.drawImage(img, 0, 0);
+            const width = 640;
+            const height = (img.height / img.width) * width;
+            canvas.width = width;
+            canvas.height = height;
+            ctx.drawImage(img, 0, 0, width, height);
             
             try {
               const a = document.createElement('a');
@@ -154,120 +197,209 @@ export default function Home() {
     }
   };
 
+  const handleManualUpdate = async () => {
+    setManualUpdate(true);
+    try {
+      const result = await generateDiagram(prompt, diagramType);
+      setDiagramCode(result);
+      setError(null);
+    } catch (error: any) {
+      if (error.message.includes('syntax')) {
+        setError('syntax');
+      } else if (error.message.includes('network')) {
+        setError('connection');
+      } else {
+        setError('invalid');
+      }
+    } finally {
+      setManualUpdate(false);
+    }
+  };
+
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex h-screen">
       <Sidebar />
       <main className="flex-1 overflow-auto" role="main">
-        <div className="container mx-auto p-6 space-y-8">
-          {/* ヘッダー部分 */}
-          <header className="text-center mb-8 pt-4" role="banner">
-            <h1 className="text-4xl font-bold mb-4">まめお・ぷらお</h1>
-            <p className="text-xl text-gray-600">
-              Mermaid記法・PlantUMLの作図をAIが支援！
+        <div className="container mx-auto p-4">
+          <header className="mb-8 text-center" role="banner">
+            <h1 className="text-3xl font-bold mb-2">AIが支援！</h1>
+            <p className="text-gray-600 dark:text-gray-400">
+              マーメイド記法・PlantUMLの作図をAIが支援！
             </p>
           </header>
 
-          {/* プレビューとコード */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
-            <div className="bg-white p-6 rounded-lg shadow-lg">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold">生成されたコード</h2>
-                <button
-                  onClick={copyToClipboard}
-                  className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 focus:ring-2 focus:ring-gray-500 focus:outline-none flex items-center"
-                  aria-label="コードをクリップボードにコピー"
-                >
-                  <Clipboard className="w-4 h-4 mr-2" aria-hidden="true" />
-                  {isCopied ? 'コピーしました！' : 'コピー'}
-                </button>
-              </div>
-              <div className="border rounded-lg overflow-hidden">
-                <SyntaxHighlighter
-                  language={diagramType === 'mermaid' ? 'mermaid' : 'plantuml'}
-                  style={vscDarkPlus}
-                  customStyle={{
-                    margin: 0,
-                    borderRadius: '0.5rem',
-                    minHeight: '300px',
-                  }}
-                  onChange={handleCodeChange}
-                  aria-label="図のコードエディタ"
-                  role="textbox"
-                  tabIndex={0}
-                >
-                  {diagramCode}
-                </SyntaxHighlighter>
-              </div>
-            </div>
-            <div className="bg-white p-6 rounded-lg shadow-lg">
-              <h2 className="text-xl font-semibold mb-4">プレビュー</h2>
-              <div 
-                className="border rounded-lg p-4 bg-gray-50 min-h-[300px]"
-                role="img"
-                aria-label="生成された図のプレビュー"
-              >
-                {diagramType === 'mermaid' ? (
-                  <Mermaid code={diagramCode} />
-                ) : (
-                  <DynamicPlantUML code={diagramCode} />
-                )}
-              </div>
-              <div className="mt-4 flex justify-center space-x-4">
-                <button
-                  onClick={() => downloadImage('png')}
-                  className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:ring-2 focus:ring-green-500 focus:outline-none flex items-center"
-                  aria-label="PNGファイルとしてダウンロード"
-                >
-                  <Download className="w-4 h-4 mr-2" aria-hidden="true" />
-                  PNG保存
-                </button>
-                <button
-                  onClick={() => downloadImage('svg')}
-                  className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 focus:ring-2 focus:ring-purple-500 focus:outline-none flex items-center"
-                  aria-label="SVGファイルとしてダウンロード"
-                >
-                  <Download className="w-4 h-4 mr-2" aria-hidden="true" />
-                  SVG保存
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* 図の種類切り替え */}
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center space-x-4">
-              <DiagramToggle value={diagramType} onChange={setDiagramType} />
-              <span className="text-gray-600 font-bold" role="tooltip">
-                ← ここで図示のスタイルを変更できます
-              </span>
-            </div>
-          </div>
-
-          {/* 入力フォーム */}
-          <form onSubmit={handleSubmit} className="space-y-4" role="form">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <div className="relative">
-              <label htmlFor="prompt-input" className="sr-only">
-                図示したい内容を入力
-              </label>
-              <textarea
-                id="prompt-input"
-                value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
-                placeholder="図示したい内容を入力してください。例：「ユーザーがログインしてから商品を購入するまでの流れを表すシーケンス図」"
-                className="w-full h-32 p-4 border rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                aria-label="図示したい内容を入力"
-              />
-              <button
-                type="submit"
-                disabled={isLoading}
-                className={`absolute bottom-4 right-4 px-6 py-2 bg-blue-600 text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none
-                  ${isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-700'}`}
-                aria-busy={isLoading}
-              >
-                {isLoading ? '生成中...' : '図を生成'}
-              </button>
+              <div className="mb-4">
+                <DiagramToggle value={diagramType} onChange={setDiagramType} />
+              </div>
+              
+              <div className="relative">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="absolute top-2 right-2"
+                        onClick={() => setShowHint(true)}
+                        aria-label="ヒントを表示"
+                      >
+                        <LightbulbIcon className="h-5 w-5" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>ヒントを表示</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+
+                <textarea
+                  value={prompt}
+                  onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setPrompt(e.target.value)}
+                  placeholder="図の説明を入力してください..."
+                  className="w-full h-32 p-4 rounded-lg border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-blue-500 dark:bg-gray-800"
+                  role="textbox"
+                  aria-label="図の説明入力欄"
+                />
+              </div>
+
+              <div className="mt-4">
+                <Button
+                  onClick={handleSubmit}
+                  disabled={isLoading}
+                  className="w-full"
+                  aria-label="図を生成"
+                >
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      生成中...
+                    </>
+                  ) : (
+                    '図を生成'
+                  )}
+                </Button>
+              </div>
+
+              <div className="mt-8">
+                <div className="flex justify-between items-center mb-2">
+                  <h2 className="text-lg font-semibold">生成されたコード</h2>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={copyToClipboard}
+                    className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                    aria-label="コードをコピー"
+                  >
+                    <Copy className="h-4 w-4 mr-1" />
+                    {isCopied ? 'コピーしました' : 'コピー'}
+                  </Button>
+                </div>
+
+                <div className="relative">
+                  <SyntaxHighlighter
+                    language="markdown"
+                    style={vscDarkPlus}
+                    customStyle={{
+                      padding: '1rem',
+                      borderRadius: '0.5rem',
+                      fontSize: '0.875rem',
+                      backgroundColor: 'var(--syntax-bg)',
+                    }}
+                    role="code"
+                    aria-label="生成されたコード"
+                  >
+                    {diagramCode}
+                  </SyntaxHighlighter>
+                </div>
+
+                <div className="mt-4">
+                  <Button
+                    onClick={handleManualUpdate}
+                    disabled={manualUpdate}
+                    className="w-full"
+                    aria-label="プレビューを更新"
+                  >
+                    {manualUpdate ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        更新中...
+                      </>
+                    ) : (
+                      <>
+                        <RefreshCw className="mr-2 h-4 w-4" />
+                        プレビューを更新
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </div>
             </div>
-          </form>
+
+            <div className="lg:pl-4">
+              <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-lg font-semibold">プレビュー</h2>
+                  <div className="flex space-x-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => downloadImage('png')}
+                      aria-label="PNGでダウンロード"
+                    >
+                      <Download className="h-4 w-4 mr-1" />
+                      PNG
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => downloadImage('svg')}
+                      aria-label="SVGでダウンロード"
+                    >
+                      <Download className="h-4 w-4 mr-1" />
+                      SVG
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="relative min-h-[200px] bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
+                  {diagramType === 'mermaid' ? (
+                    <Mermaid code={diagramCode} />
+                  ) : (
+                    <DynamicPlantUML code={diagramCode} />
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {error && (
+            <Alert variant="destructive" className="mt-4">
+              <AlertTitle>{DIAGRAM_ERRORS[error].title}</AlertTitle>
+              <AlertDescription className="whitespace-pre-line">
+                {DIAGRAM_ERRORS[error].description}
+              </AlertDescription>
+            </Alert>
+          )}
+
+          {showHint && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+              <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md mx-4">
+                <h3 className="text-xl font-semibold mb-4">{DIAGRAM_HINTS.title}</h3>
+                <p className="whitespace-pre-line text-gray-600 dark:text-gray-400">
+                  {DIAGRAM_HINTS.description}
+                </p>
+                <Button
+                  className="mt-4 w-full"
+                  onClick={() => setShowHint(false)}
+                  aria-label="ヒントを閉じる"
+                >
+                  閉じる
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
       </main>
     </div>
