@@ -18,7 +18,7 @@ import { useTheme } from 'next-themes';
 
 const routes = [
   {
-    label: 'ダッシュボード',
+    label: 'トップページ',
     icon: LayoutDashboard,
     href: '/',
     color: 'text-sky-500',
@@ -36,7 +36,7 @@ const routes = [
     color: 'text-pink-500',
   },
   {
-    label: 'お問い合わせ',
+    label: 'お問合せ',
     icon: Mail,
     href: '/contact',
     color: 'text-orange-500',

@@ -3,12 +3,11 @@
 import { useState, useEffect, ChangeEvent } from 'react';
 import { Sidebar } from '@/components/ui/sidebar';
 import { DiagramToggle } from '@/components/diagram-toggle';
-import Mermaid from '@/components/mermaid';
+import dynamic from 'next/dynamic';
 import PlantUML from '@/components/plantuml';
 import { generateDiagram } from '@/lib/gemini';
 import { DiagramType } from '@/lib/types';
 import { Clipboard, Download } from 'lucide-react';
-import dynamic from 'next/dynamic';
 
 // シンタックスハイライター
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -24,7 +23,6 @@ const INITIAL_MERMAID_CODE = `graph TD
     E --> F`;
 
 // クライアントサイドでのみレンダリング
-const DynamicMermaid = dynamic(() => import('@/components/mermaid'), { ssr: false });
 const DynamicPlantUML = dynamic(() => import('@/components/plantuml'), { ssr: false });
 
 // SyntaxHighlighterの型定義を追加
@@ -35,6 +33,15 @@ interface SyntaxHighlighterProps {
   children: string;
   onChange?: (value: string) => void;
 }
+
+const Mermaid = dynamic(() => import('@/components/mermaid'), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-48 bg-gray-100 dark:bg-gray-800 rounded-md animate-pulse flex items-center justify-center">
+      <span className="text-gray-500 dark:text-gray-400">図を生成中...</span>
+    </div>
+  ),
+});
 
 export default function Home() {
   const [prompt, setPrompt] = useState('');
@@ -200,7 +207,7 @@ export default function Home() {
                 aria-label="生成された図のプレビュー"
               >
                 {diagramType === 'mermaid' ? (
-                  <DynamicMermaid code={diagramCode} />
+                  <Mermaid code={diagramCode} />
                 ) : (
                   <DynamicPlantUML code={diagramCode} />
                 )}
