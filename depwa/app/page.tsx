@@ -109,10 +109,66 @@ export default function Home() {
         <div className="container mx-auto p-6 space-y-8">
           {/* ヘッダー部分 */}
           <div className="text-center mb-8 pt-4">
-            <h1 className="text-4xl font-bold mb-4">Diagram AI</h1>
+            <h1 className="text-4xl font-bold mb-4">まめお・ぷらお</h1>
             <p className="text-xl text-gray-600">
-              マーメイド記法・PlantUMLの作図をAIが支援！
+              Mermaid記法・PlantUMLの作図をAIが支援！
             </p>
+          </div>
+
+          {/* プレビューとコード */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+            <div className="bg-white p-6 rounded-lg shadow-lg">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-semibold">生成されたコード</h2>
+                <button
+                  onClick={copyToClipboard}
+                  className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 flex items-center"
+                >
+                  <Clipboard className="w-4 h-4 mr-2" />
+                  {isCopied ? 'コピーしました！' : 'コピー'}
+                </button>
+              </div>
+              <div className="border rounded-lg overflow-hidden">
+                <SyntaxHighlighter
+                  language={diagramType === 'mermaid' ? 'mermaid' : 'plantuml'}
+                  style={vscDarkPlus}
+                  customStyle={{
+                    margin: 0,
+                    borderRadius: '0.5rem',
+                    minHeight: '300px',
+                  }}
+                  onChange={handleCodeChange}
+                >
+                  {diagramCode}
+                </SyntaxHighlighter>
+              </div>
+            </div>
+            <div className="bg-white p-6 rounded-lg shadow-lg">
+              <h2 className="text-xl font-semibold mb-4">プレビュー</h2>
+              <div className="border rounded-lg p-4 bg-gray-50 min-h-[300px]">
+                {diagramType === 'mermaid' ? (
+                  <DynamicMermaid code={diagramCode} />
+                ) : (
+                  <DynamicPlantUML code={diagramCode} />
+                )}
+              </div>
+              <div className="mt-4 flex justify-center space-x-4">
+                <button
+                  onClick={() => downloadImage('png')}
+                  className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center"
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  PNG保存
+                </button>
+                <button
+                  onClick={() => downloadImage('svg')}
+                  className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 flex items-center"
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  SVG保存
+                </button>
+              </div>
+            </div>
           </div>
 
           {/* 図の種類切り替え */}
@@ -144,62 +200,6 @@ export default function Home() {
               </button>
             </div>
           </form>
-
-          {/* プレビューとコード */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
-            <div className="bg-white p-6 rounded-lg shadow-lg">
-              <h2 className="text-xl font-semibold mb-4">プレビュー</h2>
-              <div className="border rounded-lg p-4 bg-gray-50 min-h-[300px]">
-                {diagramType === 'mermaid' ? (
-                  <DynamicMermaid code={diagramCode} />
-                ) : (
-                  <DynamicPlantUML code={diagramCode} />
-                )}
-              </div>
-              <div className="mt-4 flex justify-center space-x-4">
-                <button
-                  onClick={() => downloadImage('png')}
-                  className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center"
-                >
-                  <Download className="w-4 h-4 mr-2" />
-                  PNG保存
-                </button>
-                <button
-                  onClick={() => downloadImage('svg')}
-                  className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 flex items-center"
-                >
-                  <Download className="w-4 h-4 mr-2" />
-                  SVG保存
-                </button>
-              </div>
-            </div>
-            <div className="bg-white p-6 rounded-lg shadow-lg">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold">生成されたコード</h2>
-                <button
-                  onClick={copyToClipboard}
-                  className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 flex items-center"
-                >
-                  <Clipboard className="w-4 h-4 mr-2" />
-                  {isCopied ? 'コピーしました！' : 'コピー'}
-                </button>
-              </div>
-              <div className="border rounded-lg overflow-hidden">
-                <SyntaxHighlighter
-                  language={diagramType === 'mermaid' ? 'mermaid' : 'plantuml'}
-                  style={vscDarkPlus}
-                  customStyle={{
-                    margin: 0,
-                    borderRadius: '0.5rem',
-                    minHeight: '300px',
-                  }}
-                  onChange={handleCodeChange}
-                >
-                  {diagramCode}
-                </SyntaxHighlighter>
-              </div>
-            </div>
-          </div>
         </div>
       </main>
     </div>

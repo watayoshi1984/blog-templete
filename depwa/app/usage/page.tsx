@@ -11,78 +11,186 @@ import { AlertCircle, CheckCircle2 } from 'lucide-react';
 const MERMAID_SAMPLES = [
   {
     title: 'フローチャート',
-    description: '処理の流れを表現する図',
+    description: '処理の流れを表現する図。システムの処理フローやビジネスプロセスの可視化に最適です。',
     code: `graph TD
-    A[開始] --> B[入力]
-    B --> C{条件分岐}
-    C -->|Yes| D[処理1]
-    C -->|No| E[処理2]
-    D --> F[終了]
-    E --> F`,
+    A[開始] --> B[ユーザー入力]
+    B --> C{入力チェック}
+    C -->|OK| D[データ処理]
+    C -->|NG| E[エラー表示]
+    D --> F[結果表示]
+    E --> B
+    F --> G[終了]`,
   },
   {
     title: 'シーケンス図',
-    description: '時系列に沿った処理の流れを表現する図',
+    description: '時系列に沿った処理の流れを表現する図。システム間の通信やユーザーとシステムの対話を表現できます。',
     code: `sequenceDiagram
-    participant ユーザー
-    participant システム
-    participant データベース
+    actor User as ユーザー
+    participant Front as フロントエンド
+    participant API as APIサーバー
+    participant DB as データベース
     
-    ユーザー->>システム: ログインリクエスト
-    システム->>データベース: 認証確認
-    データベース-->>システム: 認証結果
-    システム-->>ユーザー: ログイン成功`,
+    User->>Front: ログイン画面を開く
+    Front->>API: 認証リクエスト
+    API->>DB: ユーザー情報確認
+    DB-->>API: ユーザー情報返却
+    API-->>Front: 認証結果返却
+    Front-->>User: ログイン完了画面表示`,
   },
   {
     title: 'クラス図',
-    description: 'クラス間の関係を表現する図',
+    description: 'クラス間の関係を表現する図。オブジェクト指向設計で使用され、システムの構造を表現します。',
     code: `classDiagram
     class User {
       +String name
       +String email
+      +String password
       +login()
       +logout()
+      +updateProfile()
     }
     class Order {
       +int orderId
       +Date orderDate
+      +float totalAmount
       +process()
+      +cancel()
     }
-    User "1" --> "*" Order: places`,
+    class Product {
+      +int productId
+      +String name
+      +float price
+      +checkStock()
+    }
+    User "1" --> "*" Order: places
+    Order "*" --> "*" Product: contains`,
   },
+  {
+    title: 'ER図',
+    description: 'エンティティ間の関係を表現する図。データベース設計で使用され、テーブル間の関係を表現します。',
+    code: `erDiagram
+    CUSTOMER ||--o{ ORDER : places
+    ORDER ||--|{ ORDER_ITEM : contains
+    PRODUCT ||--o{ ORDER_ITEM : "ordered in"
+    
+    CUSTOMER {
+        int id
+        string name
+        string email
+    }
+    ORDER {
+        int id
+        date created_at
+        float total_amount
+    }
+    ORDER_ITEM {
+        int order_id
+        int product_id
+        int quantity
+    }
+    PRODUCT {
+        int id
+        string name
+        float price
+    }`,
+  },
+  {
+    title: 'ガントチャート',
+    description: 'プロジェクトのスケジュールを表現する図。タスクの期間や依存関係を可視化できます。',
+    code: `gantt
+    title プロジェクトスケジュール
+    dateFormat YYYY-MM-DD
+    section 企画
+    要件定義    :a1, 2024-01-01, 30d
+    設計        :a2, after a1, 20d
+    section 開発
+    実装        :b1, after a2, 40d
+    テスト      :b2, after b1, 20d
+    section リリース
+    デプロイ    :c1, after b2, 10d
+    運用開始    :milestone, after c1, 1d`,
+  }
 ];
 
 const PLANTUML_SAMPLES = [
   {
     title: 'ユースケース図',
-    description: 'システムの利用シーンを表現する図',
+    description: 'システムの利用シーンを表現する図。ユーザーとシステムの相互作用を表現します。',
     code: `@startuml
-actor ユーザー
+left to right direction
+actor 利用者
+actor 管理者
 rectangle システム {
   usecase "ログイン" as UC1
   usecase "商品検索" as UC2
-  usecase "注文" as UC3
+  usecase "商品購入" as UC3
+  usecase "在庫管理" as UC4
+  usecase "売上分析" as UC5
 }
-ユーザー --> UC1
-ユーザー --> UC2
-ユーザー --> UC3
+利用者 --> UC1
+利用者 --> UC2
+利用者 --> UC3
+管理者 --> UC1
+管理者 --> UC4
+管理者 --> UC5
+@enduml`,
+  },
+  {
+    title: 'アクティビティ図',
+    description: '処理の流れを表現する図。条件分岐や並行処理を含む複雑なフローを表現できます。',
+    code: `@startuml
+start
+:注文を受け付ける;
+if (在庫チェック) then (あり)
+  :注文処理;
+  fork
+    :メール送信;
+  fork again
+    :在庫更新;
+  end fork
+  :発送準備;
+else (なし)
+  :在庫切れ通知;
+endif
+:処理完了;
+stop
 @enduml`,
   },
   {
     title: 'コンポーネント図',
-    description: 'システムの構成要素を表現する図',
+    description: 'システムの構成要素を表現する図。システムのアーキテクチャを表現します。',
     code: `@startuml
 package "フロントエンド" {
   [Webブラウザ]
+  [Next.js]
 }
 package "バックエンド" {
   [APIサーバー]
-  [データベース]
+  [認証サービス]
+  database "データベース"
 }
-[Webブラウザ] --> [APIサーバー]: HTTP
-[APIサーバー] --> [データベース]: SQL
+cloud {
+  [外部API]
+}
+[Webブラウザ] --> [Next.js]
+[Next.js] --> [APIサーバー]: REST
+[APIサーバー] --> [認証サービス]: gRPC
+[APIサーバー] --> データベース: SQL
+[APIサーバー] --> [外部API]: HTTP
 @enduml`,
   },
+  {
+    title: 'ステート図',
+    description: '状態遷移を表現する図。オブジェクトの状態変化を表現します。',
+    code: `@startuml
+[*] --> 未処理
+未処理 --> 処理中 : 処理開始
+処理中 --> 完了 : 処理成功
+処理中 --> エラー : 処理失敗
+エラー --> 未処理 : 再試行
+完了 --> [*]
+@enduml`,
+  }
 ];
 
 const TROUBLESHOOTING = [
@@ -204,7 +312,7 @@ export default function UsagePage() {
 
             <section>
               <h2 className="text-2xl font-semibold mb-4">ベストプラクティス</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
                 <Alert>
                   <CheckCircle2 className="h-4 w-4" />
                   <AlertTitle>図の見やすさを重視</AlertTitle>
@@ -227,6 +335,44 @@ export default function UsagePage() {
                     </ul>
                   </AlertDescription>
                 </Alert>
+              </div>
+
+              <div className="bg-blue-50 dark:bg-blue-900 p-6 rounded-lg">
+                <h3 className="text-xl font-semibold mb-4 text-blue-800 dark:text-blue-100">
+                  参考情報
+                </h3>
+                <div className="space-y-4">
+                  <div>
+                    <h4 className="font-medium text-blue-800 dark:text-blue-100">Mermaid</h4>
+                    <p className="text-blue-700 dark:text-blue-200">
+                      詳細な構文やオプションについては、
+                      <a
+                        href="https://mermaid.js.org/intro/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:underline dark:text-blue-300"
+                      >
+                        Mermaid公式サイト
+                      </a>
+                      をご参照ください。
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-blue-800 dark:text-blue-100">PlantUML</h4>
+                    <p className="text-blue-700 dark:text-blue-200">
+                      詳細な構文やオプションについては、
+                      <a
+                        href="https://plantuml.com/ja/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:underline dark:text-blue-300"
+                      >
+                        PlantUML公式サイト
+                      </a>
+                      をご参照ください。
+                    </p>
+                  </div>
+                </div>
               </div>
             </section>
           </div>

@@ -86,112 +86,144 @@ export default function ContactPage() {
 
             <div className="bg-white p-8 rounded-lg shadow-lg">
               <div className="prose max-w-none mb-8">
-                <p>
-                  バグ報告や機能リクエストなど、お気軽にお問い合わせください。
-                  一般的な質問については、
-                  <Link href="/faq" className="text-blue-600 hover:underline">
-                    FAQページ
-                  </Link>
-                  をご確認ください。
-                </p>
-                <p className="text-sm text-gray-500">
-                  ※ 緊急の対応はできかねますが、X（@Watayoshi1984）のDMでも受け付けています。
-                </p>
+                <h2 className="text-2xl font-semibold mb-4">お問い合わせについて</h2>
+                <div className="bg-blue-50 dark:bg-blue-900 p-4 rounded-lg mb-4">
+                  <p className="text-blue-800 dark:text-blue-100">
+                    バグ報告や機能リクエストなど、お気軽にお問い合わせください。
+                    一般的な質問については、
+                    <Link href="/faq" className="text-blue-600 hover:underline dark:text-blue-300">
+                      FAQページ
+                    </Link>
+                    をご確認ください。
+                  </p>
+                </div>
+                <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
+                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                    ※ 緊急の対応はできかねますが、
+                    <a 
+                      href="https://x.com/Watayoshi1984" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline dark:text-blue-300"
+                    >
+                      X（@Watayoshi1984）
+                    </a>
+                    のDMでも受け付けています。
+                  </p>
+                </div>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-6">
-                <div>
-                  <label
-                    htmlFor="name"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    お名前
-                  </label>
-                  <Input
-                    id="name"
-                    type="text"
-                    value={formData.name}
-                    onChange={e =>
-                      setFormData(prev => ({ ...prev, name: e.target.value }))
-                    }
-                    required
-                  />
-                </div>
+                <fieldset className="space-y-6">
+                  <legend className="sr-only">お問い合わせフォーム</legend>
+                  
+                  <div>
+                    <label
+                      htmlFor="name"
+                      className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                    >
+                      お名前 <span className="text-red-500">*</span>
+                    </label>
+                    <Input
+                      id="name"
+                      type="text"
+                      value={formData.name}
+                      onChange={e =>
+                        setFormData(prev => ({ ...prev, name: e.target.value }))
+                      }
+                      placeholder="山田 太郎"
+                      required
+                      aria-required="true"
+                      className="w-full"
+                    />
+                  </div>
 
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    メールアドレス
-                  </label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={e =>
-                      setFormData(prev => ({ ...prev, email: e.target.value }))
-                    }
-                    required
-                  />
-                </div>
+                  <div>
+                    <label
+                      htmlFor="email"
+                      className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                    >
+                      メールアドレス <span className="text-red-500">*</span>
+                    </label>
+                    <Input
+                      id="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={e =>
+                        setFormData(prev => ({ ...prev, email: e.target.value }))
+                      }
+                      placeholder="example@example.com"
+                      required
+                      aria-required="true"
+                      className="w-full"
+                    />
+                    <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                      ご回答は avav.atbc@gmail.com より送信いたします
+                    </p>
+                  </div>
 
-                <div>
-                  <label
-                    htmlFor="subject"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    お問い合わせ内容
-                  </label>
-                  <Select
-                    value={formData.subject}
-                    onValueChange={value =>
-                      setFormData(prev => ({ ...prev, subject: value }))
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="選択してください" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="bug">バグ・エラー報告</SelectItem>
-                      <SelectItem value="feature">機能リクエスト</SelectItem>
-                      <SelectItem value="other">その他</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+                  <div>
+                    <label
+                      htmlFor="subject"
+                      className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                    >
+                      お問い合わせ内容 <span className="text-red-500">*</span>
+                    </label>
+                    <Select
+                      value={formData.subject}
+                      onValueChange={value =>
+                        setFormData(prev => ({ ...prev, subject: value }))
+                      }
+                    >
+                      <SelectTrigger id="subject" aria-required="true">
+                        <SelectValue placeholder="選択してください" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="bug">バグ・エラー報告</SelectItem>
+                        <SelectItem value="feature">機能リクエスト</SelectItem>
+                        <SelectItem value="other">その他</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-                <div>
-                  <label
-                    htmlFor="message"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    詳細
-                  </label>
-                  <Textarea
-                    id="message"
-                    value={formData.message}
-                    onChange={e =>
-                      setFormData(prev => ({ ...prev, message: e.target.value }))
-                    }
-                    rows={6}
-                    required
-                  />
-                </div>
+                  <div>
+                    <label
+                      htmlFor="message"
+                      className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                    >
+                      詳細 <span className="text-red-500">*</span>
+                    </label>
+                    <Textarea
+                      id="message"
+                      value={formData.message}
+                      onChange={e =>
+                        setFormData(prev => ({ ...prev, message: e.target.value }))
+                      }
+                      placeholder="お問い合わせ内容の詳細をご記入ください"
+                      rows={6}
+                      required
+                      aria-required="true"
+                      className="w-full"
+                    />
+                  </div>
+                </fieldset>
 
-                <Button
-                  type="submit"
-                  className="w-full"
-                  disabled={isLoading}
-                >
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      送信中...
-                    </>
-                  ) : (
-                    '送信'
-                  )}
-                </Button>
+                <div className="text-right">
+                  <Button
+                    type="submit"
+                    className="w-full sm:w-auto"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        送信中...
+                      </>
+                    ) : (
+                      '送信'
+                    )}
+                  </Button>
+                </div>
               </form>
             </div>
           </div>

@@ -10,8 +10,11 @@ import {
   HelpCircle,
   Mail,
   Menu,
-  X
+  X,
+  MoonIcon,
+  SunIcon
 } from 'lucide-react';
+import { useTheme } from 'next-themes';
 
 const routes = [
   {
@@ -43,9 +46,13 @@ const routes = [
 export function Sidebar() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  const { theme, setTheme } = useTheme();
 
   return (
-    <>
+    <div className={cn(
+      "fixed inset-y-0 z-50 flex w-72 flex-col bg-white dark:bg-gray-800 transition-transform duration-300",
+      isOpen ? "translate-x-0" : "-translate-x-72"
+    )}>
       <button
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
@@ -88,6 +95,28 @@ export function Sidebar() {
           </div>
         </div>
       </div>
-    </>
+
+      <div className="mt-auto p-4 border-t">
+        <button
+          onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+          className="flex items-center justify-center w-full p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+        >
+          {theme === 'dark' ? (
+            <>
+              <SunIcon className="h-5 w-5 mr-2" />
+              ライトモード
+            </>
+          ) : (
+            <>
+              <MoonIcon className="h-5 w-5 mr-2" />
+              ダークモード
+            </>
+          )}
+        </button>
+        <div className="mt-4 text-center text-sm text-gray-500 dark:text-gray-400">
+          © 2024 まめお・ぷらお
+        </div>
+      </div>
+    </div>
   );
 }

@@ -8,7 +8,7 @@ const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: 'AI Diagram Generator',
-  description: 'MermaidとPlantUMLの図を生成するAIアプリケーション',
+  description: 'MermaidとPlantUMLの作図を生成AIでコード作成を支援するアプリケーション',
 }
 
 export default function RootLayout({
