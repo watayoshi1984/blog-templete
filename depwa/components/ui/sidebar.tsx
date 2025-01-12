@@ -42,16 +42,15 @@ const routes = [
 
 export function Sidebar() {
   const pathname = usePathname();
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <>
       <button
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          'fixed top-4 z-50 rounded-lg p-2 transition-all duration-300',
-          isOpen ? 'left-64' : 'left-4',
-          'bg-gray-900 text-white hover:bg-gray-800'
+          "fixed top-4 left-4 z-50 p-2 rounded-lg bg-gray-800 text-white hover:bg-gray-700",
+          isOpen && "left-64"
         )}
       >
         {isOpen ? <X size={24} /> : <Menu size={24} />}

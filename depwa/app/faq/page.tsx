@@ -2,104 +2,102 @@
 
 import { useState } from 'react';
 import { Sidebar } from '@/components/ui/sidebar';
-import { cn } from '@/lib/utils';
 import { ChevronDown } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
-const faqs = [
+const FAQ_ITEMS = [
   {
-    question: 'どのような図が作成できますか？',
-    answer: `
-      Mermaidでは以下の図が作成できます：
-      • フローチャート（プロセスの流れ）
-      • シーケンス図（時系列の処理）
-      • クラス図（システムの構造）
-      • 状態遷移図（状態の変化）
-      • ER図（データベース設計）
-      • ガントチャート（プロジェクト計画）
+    question: '図を作成するメリットは何ですか？',
+    answer: `図を使用することで、以下のような多くのメリットがあります：
 
-      PlantUMLでは以下の図が作成できます：
-      • クラス図（詳細なシステム構造）
-      • シーケンス図（複雑な相互作用）
-      • ユースケース図（システム機能）
-      • アクティビティ図（業務フロー）
-      • コンポーネント図（システム構成）
-      • 状態遷移図（詳細な状態管理）
-    `,
+1. 複雑な情報を視覚的に分かりやすく表現できます
+2. チーム内でのコミュニケーションが円滑になります
+3. 問題点や改善点を早期に発見できます
+4. ドキュメントの品質が向上します
+5. 保守性と再利用性が高まります
+
+特に、システム設計やビジネスプロセスの説明において、図は非常に効果的なツールとなります。`,
   },
   {
-    question: '図の生成に時間がかかる場合はどうすればよいですか？',
-    answer: `
-      以下の対処方法を試してください：
-      1. 入力する説明文をより簡潔にする
-      2. 図の複雑さを軽減する
-      3. ブラウザをリフレッシュする
-      4. 別の時間帯に試す
+    question: 'MermaidとPlantUMLはどのように使い分ければよいですか？',
+    answer: `以下のような特徴を考慮して使い分けることをお勧めします：
 
-      また、大規模な図を作成する場合は、複数の小さな図に分割することをお勧めします。
-    `,
+Mermaidの特徴：
+- シンプルで直感的な構文
+- GitHubでの表示が可能
+- フローチャートやシーケンス図が得意
+- 軽量で高速な描画
+
+PlantUMLの特徴：
+- より詳細な図が作成可能
+- 豊富な図の種類
+- 企業での利用実績が豊富
+- 複雑なシステム設計に適している
+
+一般的に、簡単な図やGitHubでの表示が必要な場合はMermaid、詳細な設計図が必要な場合はPlantUMLを選択することをお勧めします。`,
   },
   {
-    question: 'MermaidとPlantUMLの違いは何ですか？',
-    answer: `
-      主な違いは以下の通りです：
+    question: '図の作成に時間がかかりすぎる場合はどうすればよいですか？',
+    answer: `以下のアプローチを試してみてください：
 
-      Mermaid:
-      • シンプルで直感的な構文
-      • Web上での表示が容易
-      • リアルタイムのプレビューが可能
-      • 基本的な図の作成に適している
+1. 最初は簡単な図から始める
+   - 核となる要素だけを含めた基本的な図を作成
+   - 徐々に詳細を追加していく
 
-      PlantUML:
-      • より詳細な図の作成が可能
-      • 豊富な図の種類とオプション
-      • 企業での利用実績が豊富
-      • 複雑なシステム設計に適している
-    `,
+2. テンプレートを活用する
+   - 使い方ページのサンプルコードを参考にする
+   - よく使う図のパターンを保存しておく
+
+3. AIの支援を最大限活用する
+   - 明確で具体的な説明を入力する
+   - 生成された図を基に微調整を行う
+
+4. 図を適切に分割する
+   - 大きな図は複数の小さな図に分割
+   - 各図の関係性を明確にする`,
   },
   {
-    question: '生成された図を編集することはできますか？',
-    answer: `
-      はい、以下の方法で編集が可能です：
+    question: '生成された図の品質を向上させるにはどうすればよいですか？',
+    answer: `以下のポイントに注意して図を改善できます：
 
-      1. 生成された図の下部に表示されるコードを直接編集
-      2. 新しい説明文を入力して再生成
-      3. 既存の図に対して修正指示を出す
+1. 入力の質を高める
+   - 具体的で明確な説明を心がける
+   - 図の目的や対象を明確にする
 
-      また、生成された図は画像としてダウンロードすることも可能です。
-    `,
+2. デザインの原則を適用する
+   - 適切な余白とスペースを確保
+   - 色やスタイルを効果的に使用
+   - 関連する要素をグループ化
+
+3. フィードバックを活用する
+   - 生成された図を見直し、必要に応じて修正
+   - チームメンバーからのフィードバックを取り入れる
+
+4. ベストプラクティスを参考にする
+   - 使い方ページのガイドラインを参照
+   - 業界標準や一般的な表記法に従う`,
   },
   {
-    question: '図の生成に失敗する場合の対処方法は？',
-    answer: `
-      以下の手順で対処してください：
+    question: '図の作成で注意すべき点は何ですか？',
+    answer: `以下の点に注意して図を作成することをお勧めします：
 
-      1. エラーメッセージを確認する
-      2. 入力文が明確で具体的か確認する
-      3. 選択した図の種類が適切か確認する
-      4. 文法やフォーマットが正しいか確認する
-      5. ブラウザをリフレッシュして再試行する
+1. 情報の過密を避ける
+   - 必要最小限の情報に絞る
+   - 複雑な図は適切に分割する
 
-      問題が解決しない場合は、お問い合わせフォームからご連絡ください。
-    `,
-  },
-  {
-    question: '推奨されるブラウザや環境はありますか？',
-    answer: `
-      以下の環境での利用を推奨しています：
+2. 一貫性を保つ
+   - 命名規則を統一する
+   - 表記方法を統一する
+   - スタイルを統一する
 
-      ブラウザ:
-      • Google Chrome（最新版）
-      • Mozilla Firefox（最新版）
-      • Microsoft Edge（最新版）
-      • Safari（最新版）
+3. メンテナンス性を考慮する
+   - 適切なコメントを追加する
+   - モジュール化を意識する
+   - 更新しやすい構造にする
 
-      画面サイズ:
-      • デスクトップ: 1280x720以上
-      • タブレット: 768x1024以上
-      • モバイル: 320x568以上
-
-      注意: Internet Explorer（IE）はサポートしていません。
-    `,
+4. セキュリティに配慮する
+   - 機密情報を含めない
+   - 必要に応じて抽象化する`,
   },
 ];
 
@@ -107,50 +105,56 @@ export default function FAQPage() {
   const [openItems, setOpenItems] = useState<number[]>([]);
 
   const toggleItem = (index: number) => {
-    setOpenItems((current) =>
-      current.includes(index)
-        ? current.filter((i) => i !== index)
-        : [...current, index]
+    setOpenItems(prev =>
+      prev.includes(index)
+        ? prev.filter(i => i !== index)
+        : [...prev, index]
     );
   };
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen overflow-hidden">
       <Sidebar />
-      <main className="flex-1 p-6 overflow-auto">
-        <div className="max-w-4xl mx-auto space-y-8">
-          <h1 className="text-3xl font-bold mb-8">よくある質問（FAQ）</h1>
-          
-          <div className="space-y-4">
-            {faqs.map((faq, index) => (
-              <div
-                key={index}
-                className="bg-white rounded-lg shadow-lg overflow-hidden"
-              >
-                <button
-                  onClick={() => toggleItem(index)}
-                  className="w-full p-6 text-left flex items-center justify-between hover:bg-gray-50"
-                >
-                  <h2 className="text-xl font-medium">{faq.question}</h2>
-                  <ChevronDown
-                    className={cn(
-                      'h-5 w-5 transition-transform duration-200',
-                      openItems.includes(index) ? 'transform rotate-180' : ''
-                    )}
-                  />
-                </button>
+      <main className="flex-1 overflow-auto">
+        <div className="container mx-auto p-6 space-y-8">
+          <div className="prose max-w-none">
+            <h1 className="text-4xl font-bold mb-8">よくある質問</h1>
+            
+            <div className="space-y-4">
+              {FAQ_ITEMS.map((item, index) => (
                 <div
-                  className={cn(
-                    'overflow-hidden transition-all duration-200',
-                    openItems.includes(index) ? 'max-h-[1000px]' : 'max-h-0'
-                  )}
+                  key={index}
+                  className="bg-white rounded-lg shadow-lg overflow-hidden"
                 >
-                  <div className="p-6 pt-0 whitespace-pre-line">
-                    {faq.answer}
-                  </div>
+                  <button
+                    onClick={() => toggleItem(index)}
+                    className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 focus:outline-none"
+                  >
+                    <h2 className="text-xl font-semibold">{item.question}</h2>
+                    <ChevronDown
+                      className={cn(
+                        'h-5 w-5 transform transition-transform duration-200',
+                        openItems.includes(index) ? 'rotate-180' : ''
+                      )}
+                    />
+                  </button>
+                  {openItems.includes(index) && (
+                    <div className="px-6 py-4 bg-gray-50">
+                      <div className="prose max-w-none">
+                        {item.answer.split('\n\n').map((paragraph, pIndex) => (
+                          <p
+                            key={pIndex}
+                            className="mb-4 last:mb-0 whitespace-pre-wrap"
+                          >
+                            {paragraph}
+                          </p>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </main>
