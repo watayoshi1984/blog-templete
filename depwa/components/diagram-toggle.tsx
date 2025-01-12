@@ -1,23 +1,29 @@
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
-import { DiagramType } from "@/lib/types";
+'use client';
 
-interface DiagramToggleProps {
-  value: DiagramType;
-  onChange: (value: DiagramType) => void;
-}
+import { DiagramToggleProps } from '@/lib/types';
+import { cn } from '@/lib/utils';
 
 export function DiagramToggle({ value, onChange }: DiagramToggleProps) {
   return (
-    <div className="flex items-center space-x-2">
-      <Switch
-        id="diagram-type"
-        checked={value === 'plantuml'}
-        onCheckedChange={(checked) => onChange(checked ? 'plantuml' : 'mermaid')}
-      />
-      <Label htmlFor="diagram-type">
-        {value === 'mermaid' ? 'Mermaid' : 'PlantUML'}
-      </Label>
+    <div className="diagram-toggle">
+      <button
+        onClick={() => onChange('mermaid')}
+        className={cn(
+          'diagram-toggle-button',
+          value === 'mermaid' && 'active'
+        )}
+      >
+        Mermaid
+      </button>
+      <button
+        onClick={() => onChange('plantuml')}
+        className={cn(
+          'diagram-toggle-button',
+          value === 'plantuml' && 'active'
+        )}
+      >
+        PlantUML
+      </button>
     </div>
   );
 } 

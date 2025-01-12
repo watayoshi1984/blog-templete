@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useRef } from 'react';
 import mermaid from 'mermaid';
 
@@ -17,12 +19,16 @@ export default function Mermaid({ code }: MermaidProps) {
       });
       
       try {
-        containerRef.current.innerHTML = code;
-        mermaid.contentLoaded();
+        containerRef.current.innerHTML = '';
+        mermaid.render('mermaid-diagram', code).then(({ svg }) => {
+          if (containerRef.current) {
+            containerRef.current.innerHTML = svg;
+          }
+        });
       } catch (error) {
-        console.error('Mermaid rendering error:', error);
+        console.error('Error rendering Mermaid diagram:', error);
         if (containerRef.current) {
-          containerRef.current.innerHTML = '図の生成に失敗しました';
+          containerRef.current.innerHTML = 'Error rendering diagram';
         }
       }
     }
