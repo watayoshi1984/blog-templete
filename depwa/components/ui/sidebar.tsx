@@ -48,11 +48,11 @@ export function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
   const { theme, setTheme } = useTheme();
 
-  return (
+      return (
     <>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={cn(
+          className={cn(
           "fixed top-4 left-4 z-50 p-2 rounded-lg bg-gray-800 dark:bg-gray-700 text-white hover:bg-gray-700 dark:hover:bg-gray-600 transition-all",
           isOpen && "left-64"
         )}
@@ -79,7 +79,7 @@ export function Sidebar() {
                 <Link
                   key={route.href}
                   href={route.href}
-                  className={cn(
+          className={cn(
                     'flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors',
                     'hover:bg-gray-100 dark:hover:bg-gray-700',
                     pathname === route.href
@@ -97,7 +97,7 @@ export function Sidebar() {
           <div className="mt-auto p-4 border-t border-gray-200 dark:border-gray-700">
             <button
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              className={cn(
+          className={cn(
                 'flex items-center justify-center w-full px-4 py-2 rounded-lg transition-colors',
                 'text-sm font-medium',
                 'hover:bg-gray-100 dark:hover:bg-gray-700',

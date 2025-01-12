@@ -266,7 +266,7 @@ export default function UsagePage() {
                                   sample.title === 'ER図' ? 'diagram' :
                                   'gantt'}.svg`} 
                                 alt={`${sample.title}のプレビュー`}
-                                className="max-w-full h-auto"
+                                className={`max-w-full h-auto ${sample.title === 'クラス図' ? 'h-[33vh]' : ''}`}
                                 loading="lazy"
                               />
                             </div>
@@ -299,7 +299,7 @@ export default function UsagePage() {
                                   sample.title === 'コンポーネント図' ? 'Component-Diagram' :
                                   'State-Diagram'}.svg`}
                                 alt={`${sample.title}のプレビュー`}
-                                className="max-w-full h-auto"
+                                className={`max-w-full h-auto ${sample.title === 'ユースケース図' ? 'h-[40vh]' : ''}`}
                                 loading="lazy"
                               />
                             </div>

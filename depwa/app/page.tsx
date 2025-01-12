@@ -254,85 +254,58 @@ export default function Home() {
                   </Tooltip>
                 </TooltipProvider>
 
-                <textarea
-                  value={prompt}
-                  onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setPrompt(e.target.value)}
-                  placeholder="図の説明を入力してください..."
-                  className="w-full h-32 p-4 rounded-lg border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-blue-500 dark:bg-gray-800"
-                  role="textbox"
-                  aria-label="図の説明入力欄"
-                />
-              </div>
+                <div className="mt-8">
+                  <div className="flex justify-between items-center mb-2">
+                    <h2 className="text-lg font-semibold">生成されたコード</h2>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={copyToClipboard}
+                      className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                      aria-label="コードをコピー"
+                    >
+                      <Copy className="h-4 w-4 mr-1" />
+                      {isCopied ? 'コピーしました' : 'コピー'}
+                    </Button>
+                  </div>
 
-              <div className="mt-4">
-                <Button
-                  onClick={handleSubmit}
-                  disabled={isLoading}
-                  className="w-full"
-                  aria-label="図を生成"
-                >
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      生成中...
-                    </>
-                  ) : (
-                    '図を生成'
-                  )}
-                </Button>
-              </div>
+                  <div className="relative">
+                    <SyntaxHighlighter
+                      language="markdown"
+                      style={vscDarkPlus}
+                      customStyle={{
+                        padding: '1rem',
+                        borderRadius: '0.5rem',
+                        fontSize: '0.875rem',
+                        backgroundColor: 'var(--syntax-bg)',
+                      }}
+                      role="code"
+                      aria-label="生成されたコード"
+                    >
+                      {diagramCode}
+                    </SyntaxHighlighter>
+                  </div>
 
-              <div className="mt-8">
-                <div className="flex justify-between items-center mb-2">
-                  <h2 className="text-lg font-semibold">生成されたコード</h2>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={copyToClipboard}
-                    className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-                    aria-label="コードをコピー"
-                  >
-                    <Copy className="h-4 w-4 mr-1" />
-                    {isCopied ? 'コピーしました' : 'コピー'}
-                  </Button>
-                </div>
-
-                <div className="relative">
-                  <SyntaxHighlighter
-                    language="markdown"
-                    style={vscDarkPlus}
-                    customStyle={{
-                      padding: '1rem',
-                      borderRadius: '0.5rem',
-                      fontSize: '0.875rem',
-                      backgroundColor: 'var(--syntax-bg)',
-                    }}
-                    role="code"
-                    aria-label="生成されたコード"
-                  >
-                    {diagramCode}
-                  </SyntaxHighlighter>
-                </div>
-
-                <div className="mt-4">
-                  <Button
-                    onClick={handleManualUpdate}
-                    disabled={manualUpdate}
-                    className="w-full"
-                    aria-label="プレビューを更新"
-                  >
-                    {manualUpdate ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        更新中...
-                      </>
-                    ) : (
-                      <>
-                        <RefreshCw className="mr-2 h-4 w-4" />
-                        プレビューを更新
-                      </>
-                    )}
-                  </Button>
+                  <div className="mt-4">
+                    <Button
+                      onClick={handleManualUpdate}
+                      disabled={manualUpdate}
+                      className="w-full"
+                      aria-label="プレビューを更新"
+                    >
+                      {manualUpdate ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          更新中...
+                        </>
+                      ) : (
+                        <>
+                          <RefreshCw className="mr-2 h-4 w-4" />
+                          プレビューを更新
+                        </>
+                      )}
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -370,6 +343,35 @@ export default function Home() {
                     <DynamicPlantUML code={diagramCode} />
                   )}
                 </div>
+              </div>
+            </div>
+
+            <div className="relative">
+              <textarea
+                value={prompt}
+                onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setPrompt(e.target.value)}
+                placeholder="図の説明を入力してください..."
+                className="w-full h-32 p-4 rounded-lg border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-blue-500 dark:bg-gray-800"
+                role="textbox"
+                aria-label="図の説明入力欄"
+              />
+
+              <div className="mt-4">
+                <Button
+                  onClick={handleSubmit}
+                  disabled={isLoading}
+                  className="w-full"
+                  aria-label="図を生成"
+                >
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      生成中...
+                    </>
+                  ) : (
+                    '図を生成'
+                  )}
+                </Button>
               </div>
             </div>
           </div>

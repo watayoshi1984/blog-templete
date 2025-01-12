@@ -3,12 +3,21 @@ import { Inter } from "next/font/google"
 import './globals.css'
 import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@/lib/utils"
+import { Shapes } from 'lucide-react'
 
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: 'AI Diagram Generator',
   description: 'MermaidとPlantUMLの作図を生成AIでコード作成を支援するアプリケーション',
+  icons: {
+    icon: [
+      {
+        url: '/icon.svg',
+        type: 'image/svg+xml',
+      },
+    ],
+  },
 }
 
 export default function RootLayout({
