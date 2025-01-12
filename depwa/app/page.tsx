@@ -3,8 +3,8 @@
 import { useState } from 'react';
 import { Sidebar } from '@/components/ui/sidebar';
 import { DiagramToggle } from '@/components/diagram-toggle';
-import { Mermaid } from '@/components/mermaid';
-import { PlantUML } from '@/components/plantuml';
+import Mermaid from '@/components/mermaid';
+import PlantUML from '@/components/plantuml';
 import { generateDiagram } from '@/lib/gemini';
 import { DiagramType } from '@/lib/types';
 

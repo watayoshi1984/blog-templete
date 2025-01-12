@@ -11,46 +11,42 @@ export default function Mermaid({ code }: MermaidProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (containerRef.current) {
-      mermaid.initialize({
-        startOnLoad: true,
-        theme: 'default',
-        securityLevel: 'loose',
-        logLevel: 'error',
-        fontFamily: 'sans-serif',
-        flowchart: {
-          htmlLabels: true,
-          curve: 'linear',
-        },
-      });
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'default',
+      logLevel: 'error',
+      securityLevel: 'loose',
+      fontFamily: 'sans-serif',
+      flowchart: {
+        htmlLabels: true,
+        curve: 'basis',
+      },
+    });
 
-      const renderDiagram = async () => {
-        try {
-          const processedCode = code.trim().replace(/^```mermaid\n/, '').replace(/```$/, '');
-          
-          containerRef.current!.innerHTML = '';
-          
-          const { svg } = await mermaid.render('mermaid-diagram', processedCode);
-          
-          if (containerRef.current) {
-            containerRef.current.innerHTML = svg;
-          }
-        } catch (error) {
-          console.error('Error rendering Mermaid diagram:', error);
-          if (containerRef.current) {
-            containerRef.current.innerHTML = `
-              <div class="p-4 text-red-500 bg-red-50 rounded-lg">
-                図の生成に失敗しました。構文を確認してください。
-                <pre class="mt-2 text-sm">${error instanceof Error ? error.message : '不明なエラー'}</pre>
-              </div>
-            `;
-          }
-        }
-      };
+    const renderDiagram = async () => {
+      if (!containerRef.current) return;
 
-      renderDiagram();
-    }
+      try {
+        // コンテナをクリア
+        containerRef.current.innerHTML = '';
+        
+        // コードをトリムして不要な空白を削除
+        const trimmedCode = code.trim();
+        
+        // Mermaid形式のコードブロックを抽出（もし存在する場合）
+        const mermaidCode = trimmedCode.replace(/^```mermaid\n([\s\S]*?)```$/m, '$1').trim();
+
+        // 図を生成
+        const { svg } = await mermaid.render('mermaid-diagram', mermaidCode);
+        containerRef.current.innerHTML = svg;
+      } catch (error) {
+        console.error('Error rendering Mermaid diagram:', error);
+        containerRef.current.innerHTML = '<div class="text-red-500">図の生成に失敗しました。構文を確認してください。</div>';
+      }
+    };
+
+    renderDiagram();
   }, [code]);
 
-  return <div ref={containerRef} className="mermaid w-full" />;
+  return <div ref={containerRef} className="mermaid" />;
 } 
