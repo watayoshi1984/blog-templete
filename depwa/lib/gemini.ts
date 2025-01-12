@@ -1,6 +1,15 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { DiagramType } from "./types";
 
+// エラーメッセージの定義
+const ERROR_MESSAGES = {
+  API_KEY_MISSING: "Gemini APIキーが設定されていません。環境変数NEXT_PUBLIC_GEMINI_API_KEYを確認してください。",
+  NETWORK_ERROR: "ネットワークエラーが発生しました。インターネット接続を確認してください。",
+  INVALID_RESPONSE: "APIからの応答が無効です。しばらく待ってから再試行してください。",
+  RATE_LIMIT: "APIのレート制限に達しました。しばらく待ってから再試行してください。",
+  UNKNOWN: "予期せぬエラーが発生しました。詳細: ",
+} as const;
+
 const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY!);
 
 const MERMAID_PROMPT = `
@@ -61,34 +70,73 @@ const PLANTUML_PROMPT = `
 `;
 
 export async function generateDiagram(prompt: string, type: DiagramType): Promise<string> {
+  if (!process.env.NEXT_PUBLIC_GEMINI_API_KEY) {
+    throw new Error(ERROR_MESSAGES.API_KEY_MISSING);
+  }
+
   try {
     const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
     const systemPrompt = type === 'mermaid' ? MERMAID_PROMPT : PLANTUML_PROMPT;
     const result = await model.generateContent([systemPrompt, prompt]);
     const response = await result.response;
     const text = response.text();
+    
+    if (!text) {
+      throw new Error(ERROR_MESSAGES.INVALID_RESPONSE);
+    }
+    
     return text.trim();
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error generating diagram:', error);
-    throw error;
+    
+    // エラーの種類に応じて適切なメッセージを返す
+    if (error.message?.includes('rate limit')) {
+      throw new Error(ERROR_MESSAGES.RATE_LIMIT);
+    }
+    if (error.message?.includes('network')) {
+      throw new Error(ERROR_MESSAGES.NETWORK_ERROR);
+    }
+    
+    throw new Error(ERROR_MESSAGES.UNKNOWN + error.message);
   }
 }
 
-export async function modifyDiagram(currentCode: string, prompt: string, notationType: 'mermaid' | 'plantuml'): Promise<string> {
-  const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+export async function modifyDiagram(currentCode: string, prompt: string, notationType: DiagramType): Promise<string> {
+  if (!process.env.NEXT_PUBLIC_GEMINI_API_KEY) {
+    throw new Error(ERROR_MESSAGES.API_KEY_MISSING);
+  }
 
-  const result = await model.generateContent(`
-    Modify the following ${notationType} diagram based on this instruction:
-    ${prompt}
+  try {
+    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    const result = await model.generateContent(`
+      Modify the following ${notationType} diagram based on this instruction:
+      ${prompt}
 
-    Current diagram code:
-    ${currentCode}
+      Current diagram code:
+      ${currentCode}
 
-    Only return the modified ${notationType} code, without any additional text or explanations.
-  `);
+      Only return the modified ${notationType} code, without any additional text or explanations.
+    `);
 
-  const response = result.response;
-  const text = response.text();
-  return text.trim();
+    const response = result.response;
+    const text = response.text();
+    
+    if (!text) {
+      throw new Error(ERROR_MESSAGES.INVALID_RESPONSE);
+    }
+    
+    return text.trim();
+  } catch (error: any) {
+    console.error('Error modifying diagram:', error);
+    
+    if (error.message?.includes('rate limit')) {
+      throw new Error(ERROR_MESSAGES.RATE_LIMIT);
+    }
+    if (error.message?.includes('network')) {
+      throw new Error(ERROR_MESSAGES.NETWORK_ERROR);
+    }
+    
+    throw new Error(ERROR_MESSAGES.UNKNOWN + error.message);
+  }
 }
 
