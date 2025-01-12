@@ -246,19 +246,19 @@ export default function UsagePage() {
                 <TabsContent value="mermaid">
                   <div className="space-y-8">
                     {MERMAID_SAMPLES.map((sample, index) => (
-                      <div key={index} className="bg-white p-6 rounded-lg shadow-lg">
-                        <h3 className="text-xl font-semibold mb-2">{sample.title}</h3>
+                      <div key={index} className="bg-white p-6 rounded-lg shadow-lg border border-gray-200 hover:border-blue-300 transition-colors duration-200">
+                        <h3 className="text-xl font-semibold mb-2 text-gray-800">{sample.title}</h3>
                         <p className="text-gray-600 mb-4">{sample.description}</p>
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                          <div className="bg-gray-50 p-4 rounded">
-                            <h4 className="text-sm font-medium mb-2">コード例</h4>
-                            <pre className="text-sm overflow-auto p-2 bg-gray-100 rounded">
-                              <code>{sample.code}</code>
+                          <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                            <h4 className="text-sm font-medium mb-2 text-gray-700">コード例</h4>
+                            <pre className="text-sm overflow-auto p-2 bg-gray-100 rounded-lg border border-gray-300">
+                              <code className="text-gray-800">{sample.code}</code>
                             </pre>
                           </div>
-                          <div className="bg-gray-50 p-4 rounded">
-                            <h4 className="text-sm font-medium mb-2">プレビュー</h4>
-                            <div className="flex justify-center items-center">
+                          <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                            <h4 className="text-sm font-medium mb-2 text-gray-700">プレビュー</h4>
+                            <div className="flex justify-center items-center bg-white rounded-lg p-2">
                               <img 
                                 src={`/diagrams/${sample.title === 'フローチャート' ? 'graph-LR' : 
                                   sample.title === 'シーケンス図' ? 'sequenceDiagram' :
@@ -266,7 +266,10 @@ export default function UsagePage() {
                                   sample.title === 'ER図' ? 'diagram' :
                                   'gantt'}.svg`} 
                                 alt={`${sample.title}のプレビュー`}
-                                className={`max-w-full h-auto ${sample.title === 'クラス図' ? 'h-[33vh]' : ''}`}
+                                className={`max-w-full h-auto ${
+                                  sample.title === 'クラス図' ? 'max-h-[33vh]' : 
+                                  'max-h-[50vh]'
+                                }`}
                                 loading="lazy"
                               />
                             </div>
@@ -280,26 +283,29 @@ export default function UsagePage() {
                 <TabsContent value="plantuml">
                   <div className="space-y-8">
                     {PLANTUML_SAMPLES.map((sample, index) => (
-                      <div key={index} className="bg-white p-6 rounded-lg shadow-lg">
-                        <h3 className="text-xl font-semibold mb-2">{sample.title}</h3>
+                      <div key={index} className="bg-white p-6 rounded-lg shadow-lg border border-gray-200 hover:border-blue-300 transition-colors duration-200">
+                        <h3 className="text-xl font-semibold mb-2 text-gray-800">{sample.title}</h3>
                         <p className="text-gray-600 mb-4">{sample.description}</p>
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                          <div className="bg-gray-50 p-4 rounded">
-                            <h4 className="text-sm font-medium mb-2">コード例</h4>
-                            <pre className="text-sm overflow-auto p-2 bg-gray-100 rounded">
-                              <code>{sample.code}</code>
+                          <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                            <h4 className="text-sm font-medium mb-2 text-gray-700">コード例</h4>
+                            <pre className="text-sm overflow-auto p-2 bg-gray-100 rounded-lg border border-gray-300">
+                              <code className="text-gray-800">{sample.code}</code>
                             </pre>
                           </div>
-                          <div className="bg-gray-50 p-4 rounded">
-                            <h4 className="text-sm font-medium mb-2">プレビュー</h4>
-                            <div className="flex justify-center items-center">
+                          <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                            <h4 className="text-sm font-medium mb-2 text-gray-700">プレビュー</h4>
+                            <div className="flex justify-center items-center bg-white rounded-lg p-2">
                               <img 
                                 src={`/diagrams/${sample.title === 'ユースケース図' ? 'Use-Case-Diagram' :
                                   sample.title === 'アクティビティ図' ? 'Activity-Diagram' :
                                   sample.title === 'コンポーネント図' ? 'Component-Diagram' :
                                   'State-Diagram'}.svg`}
                                 alt={`${sample.title}のプレビュー`}
-                                className={`max-w-full h-auto ${sample.title === 'ユースケース図' ? 'h-[40vh]' : ''}`}
+                                className={`max-w-full h-auto ${
+                                  sample.title === 'ユースケース図' ? 'max-h-[40vh]' : 
+                                  'max-h-[50vh]'
+                                }`}
                                 loading="lazy"
                               />
                             </div>
@@ -316,13 +322,13 @@ export default function UsagePage() {
               <h2 className="text-2xl font-semibold mb-4">トラブルシューティング</h2>
               <div className="space-y-4">
                 {TROUBLESHOOTING.map((item, index) => (
-                  <Alert key={index}>
-                    <AlertCircle className="h-4 w-4" />
-                    <AlertTitle>{item.issue}</AlertTitle>
+                  <Alert key={index} className="bg-white border-l-4 border-blue-500">
+                    <AlertCircle className="h-4 w-4 text-blue-500" />
+                    <AlertTitle className="text-gray-800">{item.issue}</AlertTitle>
                     <AlertDescription>
-                      <ul className="list-disc list-inside mt-2">
+                      <ul className="list-disc list-inside mt-2 text-gray-600">
                         {item.solutions.map((solution, sIndex) => (
-                          <li key={sIndex}>{solution}</li>
+                          <li key={sIndex} className="mb-1">{solution}</li>
                         ))}
                       </ul>
                     </AlertDescription>
@@ -334,31 +340,31 @@ export default function UsagePage() {
             <section>
               <h2 className="text-2xl font-semibold mb-4">ベストプラクティス</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-                <Alert>
-                  <CheckCircle2 className="h-4 w-4" />
-                  <AlertTitle>図の見やすさを重視</AlertTitle>
+                <Alert className="bg-white border-l-4 border-green-500">
+                  <CheckCircle2 className="h-4 w-4 text-green-500" />
+                  <AlertTitle className="text-gray-800">図の見やすさを重視</AlertTitle>
                   <AlertDescription>
-                    <ul className="list-disc list-inside mt-2">
-                      <li>適切な余白とスペースを確保</li>
-                      <li>関連する要素をグループ化</li>
-                      <li>色やスタイルを効果的に使用</li>
+                    <ul className="list-disc list-inside mt-2 text-gray-600">
+                      <li className="mb-1">適切な余白とスペースを確保</li>
+                      <li className="mb-1">関連する要素をグループ化</li>
+                      <li className="mb-1">色やスタイルを効果的に使用</li>
                     </ul>
                   </AlertDescription>
                 </Alert>
-                <Alert>
-                  <CheckCircle2 className="h-4 w-4" />
-                  <AlertTitle>メンテナンス性を考慮</AlertTitle>
+                <Alert className="bg-white border-l-4 border-green-500">
+                  <CheckCircle2 className="h-4 w-4 text-green-500" />
+                  <AlertTitle className="text-gray-800">メンテナンス性を考慮</AlertTitle>
                   <AlertDescription>
-                    <ul className="list-disc list-inside mt-2">
-                      <li>適切なコメントを追加</li>
-                      <li>命名規則を統一</li>
-                      <li>モジュール化を意識</li>
+                    <ul className="list-disc list-inside mt-2 text-gray-600">
+                      <li className="mb-1">適切なコメントを追加</li>
+                      <li className="mb-1">命名規則を統一</li>
+                      <li className="mb-1">モジュール化を意識</li>
                     </ul>
                   </AlertDescription>
                 </Alert>
               </div>
 
-              <div className="bg-blue-50 dark:bg-blue-900 p-6 rounded-lg">
+              <div className="bg-blue-50 dark:bg-blue-900 p-6 rounded-lg border border-blue-200">
                 <h3 className="text-xl font-semibold mb-4 text-blue-800 dark:text-blue-100">
                   参考情報
                 </h3>
@@ -371,7 +377,7 @@ export default function UsagePage() {
                         href="https://mermaid.js.org/intro/"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-blue-600 hover:underline dark:text-blue-300"
+                        className="text-blue-600 hover:text-blue-800 hover:underline dark:text-blue-300"
                       >
                         Mermaid公式サイト
                       </a>
@@ -386,7 +392,7 @@ export default function UsagePage() {
                         href="https://plantuml.com/ja/"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-blue-600 hover:underline dark:text-blue-300"
+                        className="text-blue-600 hover:text-blue-800 hover:underline dark:text-blue-300"
                       >
                         PlantUML公式サイト
                       </a>

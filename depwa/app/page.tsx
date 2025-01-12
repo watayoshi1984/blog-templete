@@ -235,25 +235,6 @@ export default function Home() {
               </div>
               
               <div className="relative">
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="absolute top-2 right-2"
-                        onClick={() => setShowHint(true)}
-                        aria-label="ヒントを表示"
-                      >
-                        <LightbulbIcon className="h-5 w-5" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>ヒントを表示</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-
                 <div className="mt-8">
                   <div className="flex justify-between items-center mb-2">
                     <h2 className="text-lg font-semibold">生成されたコード</h2>
@@ -290,7 +271,7 @@ export default function Home() {
                     <Button
                       onClick={handleManualUpdate}
                       disabled={manualUpdate}
-                      className="w-full"
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white"
                       aria-label="プレビューを更新"
                     >
                       {manualUpdate ? (
@@ -319,6 +300,7 @@ export default function Home() {
                       variant="outline"
                       size="sm"
                       onClick={() => downloadImage('png')}
+                      className="bg-gray-100 hover:bg-gray-200 text-gray-700"
                       aria-label="PNGでダウンロード"
                     >
                       <Download className="h-4 w-4 mr-1" />
@@ -328,6 +310,7 @@ export default function Home() {
                       variant="outline"
                       size="sm"
                       onClick={() => downloadImage('svg')}
+                      className="bg-gray-100 hover:bg-gray-200 text-gray-700"
                       aria-label="SVGでダウンロード"
                     >
                       <Download className="h-4 w-4 mr-1" />
@@ -346,7 +329,28 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="relative">
+            <div className="lg:col-span-2 relative">
+              <div className="absolute top-2 right-2 z-10">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setShowHint(true)}
+                        className="bg-blue-50 hover:bg-blue-100 text-blue-600"
+                        aria-label="ヒントを表示"
+                      >
+                        <LightbulbIcon className="h-5 w-5" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>ヒントを表示</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+
               <textarea
                 value={prompt}
                 onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setPrompt(e.target.value)}
@@ -360,7 +364,7 @@ export default function Home() {
                 <Button
                   onClick={handleSubmit}
                   disabled={isLoading}
-                  className="w-full"
+                  className="w-full bg-indigo-600 hover:bg-indigo-700 text-white"
                   aria-label="図を生成"
                 >
                   {isLoading ? (
