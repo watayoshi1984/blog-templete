@@ -2,41 +2,45 @@
 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
   <!-- グラデーション定義 -->
   <defs>
-    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#4F46E5;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#6366F1;stop-opacity:1" />
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4F46E5" />
+      <stop offset="100%" style="stop-color:#818CF8" />
+    </linearGradient>
+    <linearGradient id="shineGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFFFF" />
+      <stop offset="100%" style="stop-color:#E5E7EB" />
     </linearGradient>
   </defs>
 
-  <!-- 背景の六角形 -->
-  <path d="M12 2L22 8V16L12 22L2 16V8L12 2Z" 
-        fill="url(#grad1)" 
-        stroke="white" 
-        stroke-width="0.5"/>
+  <!-- 背景の角丸四角 -->
+  <rect x="0.5" y="0.5" width="23" height="23" rx="6" fill="url(#bgGradient)" />
 
-  <!-- 中央の図形を表現する線 -->
-  <path d="M8 8L16 8M8 12L16 12M8 16L16 16" 
+  <!-- 馬の横顔 -->
+  <!-- 頭部のメインシェイプ -->
+  <path d="M2 14C2 10 4.5 8 6.5 8C8.5 8 9.5 9 12 9C14.5 9 15.5 7 17.5 7C19.5 7 21 9 21 10C21 11 20 12 19 13C18 14 17 16 15 17C13 18 11 18 9 17C7 16 2 15 2 14Z" 
+        fill="white" />
+  
+  <!-- 耳 -->
+  <path d="M6.5 8L5.5 5" 
         stroke="white" 
-        stroke-width="2" 
-        stroke-linecap="round"
-        stroke-linejoin="round"/>
+        stroke-width="2.5"
+        stroke-linecap="round" />
 
-  <!-- 接続点を表現する円 -->
-  <circle cx="8" cy="8" r="1.2" fill="white"/>
-  <circle cx="16" cy="8" r="1.2" fill="white"/>
-  <circle cx="12" cy="12" r="1.8" fill="white"/>
-  <circle cx="8" cy="16" r="1.2" fill="white"/>
-  <circle cx="16" cy="16" r="1.2" fill="white"/>
+  <!-- 鼻先 -->
+  <path d="M19 13C20 13 21 14 21 15C21 16 20 17 19 17" 
+        stroke="white" 
+        stroke-width="2.5"
+        stroke-linecap="round" />
 
-  <!-- 動的な要素を表現する装飾的な線 -->
-  <path d="M5 10L3 12L5 14" 
+  <!-- 目 -->
+  <circle cx="16" cy="10" r="2" fill="url(#bgGradient)" stroke="white" stroke-width="0.5" />
+
+  <!-- たてがみ -->
+  <path d="M4 14C4 14 5 10 6.5 8C7.5 6 8.5 5 10.5 5" 
         stroke="white" 
-        stroke-width="1.5" 
-        stroke-linecap="round"
-        stroke-linejoin="round"/>
-  <path d="M19 10L21 12L19 14" 
-        stroke="white" 
-        stroke-width="1.5" 
-        stroke-linecap="round"
-        stroke-linejoin="round"/>
+        stroke-width="2.5"
+        stroke-linecap="round" />
+
+  <!-- 装飾的な光の効果 -->
+  <circle cx="19" cy="7" r="1.2" fill="url(#shineGradient)" opacity="0.8" />
 </svg> 
