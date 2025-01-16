@@ -93,7 +93,28 @@
    - release/*: リリース準備
    - hotfix/*: 緊急修正
 
-2. **コミットメッセージ**：
+2. **コミット前処理**：
+   - コミット前に必ず`npm run lint`を実行
+   - 自動フォーマットを適用：`npx prettier --write .`
+   - エラーがある場合はコミットを中止
+   - pre-commitフックを設定（Huskyを使用）
+
+3. **コミットメッセージ**：
    - 絵文字プレフィックスを使用
    - タイプ: タイトル形式で記載
    - 本文に変更理由と影響範囲を記載
+
+## 🔗 公式ドキュメントリンク
+- [Next.js公式ドキュメント](https://nextjs.org/docs)
+- [TypeScript公式ドキュメント](https://www.typescriptlang.org/docs/)
+- [Tailwind CSS公式ドキュメント](https://tailwindcss.com/docs)
+- [Zod公式ドキュメント](https://zod.dev/)
+- [zustand公式ドキュメント](https://zustand-demo.pmnd.rs/)
+
+## ✅ ベストプラクティス準拠
+本プロジェクトは以下の公式ドキュメントおよび業界標準のベストプラクティスに準拠します：
+1. Next.jsの推奨アーキテクチャ
+2. TypeScriptのstrictモード
+3. Tailwind CSSのユーティリティファースト原則
+4. Reactのコンポーネント設計原則
+5. 状態管理のベストプラクティス
