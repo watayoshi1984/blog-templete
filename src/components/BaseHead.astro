@@ -27,6 +27,15 @@ const ogImageURL = ogImage || post?.FeaturedImage?.Url || coverImageURL;
 
 <!-- Global Metadata -->
 <meta charset="utf-8" />
+<script>
+  const fontFamily = import.meta.env.FONT_FAMILY;
+  if (fontFamily) {
+    document.documentElement.style.setProperty(
+      '--font-family-default',
+      `var(--font-family-${fontFamily.toLowerCase()})`
+    );
+  }
+</script>
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <link rel="icon" type="image/jpeg" href={iconPath || '/favicon.ico'} />
 <meta name="generator" content={Astro.generator} />
@@ -137,7 +146,7 @@ const ogImageURL = ogImage || post?.FeaturedImage?.Url || coverImageURL;
   }
   table {
     width: 100%;
-  }
+    }
   img {
     max-width: 100%;
     height: auto;
@@ -173,4 +182,4 @@ const ogImageURL = ogImage || post?.FeaturedImage?.Url || coverImageURL;
       padding: 1em;
     }
   }
-</style> 
+</style>
