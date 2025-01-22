@@ -1,0 +1,39 @@
+---
+import { RichText } from '../../../lib/interfaces.ts'
+
+/**
+ * @interface Props
+ * @description Code.astroのPropsのインターフェース
+ */
+export interface Props {
+  richText: RichText
+}
+
+const { richText } = Astro.props
+---
+
+{
+  /* prettier-ignore
+     * Annotation.Codeが真の場合に<code>タグで囲む
+     * そうでない場合は、そのままslotを表示する
+     * prettier-ignore を使用している理由：改行を保持するため
+     */
+  richText.Annotation.Code ? (
+    <code><slot /></code>
+  ) : (
+    <slot />
+  )
+}
+
+<style>
+  code {
+    color: #eb5757; /* コードテキストの色 */
+    padding: 0.25rem; /* コードテキストのpadding */
+  }
+</style>
+
+<!--
+  改善点:
+    - Propsのインターフェース定義をより具体的にする (例: RichText型の中身を定義)
+    - コードスタイルをCSS変数で定義する (例: --code-color, --code-padding)
+-->

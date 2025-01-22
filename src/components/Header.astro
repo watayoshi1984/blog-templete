@@ -1,0 +1,106 @@
+---
+import { Image } from 'astro:assets';
+import { Icon } from 'astro-icon';
+import { SITE_TITLE } from '../server-constants';
+
+export interface Props {
+  title?: string;
+  iconPath?: string;
+}
+
+const { title = SITE_TITLE, iconPath } = Astro.props;
+---
+
+<header>
+  <nav>
+    <div class="logo">
+      {
+        iconPath ? (
+          <Image
+            src={iconPath}
+            alt="Site Icon"
+            width={40}
+            height={40}
+            format="webp"
+            class="icon"
+          />
+        ) : (
+          <Icon name="octicon:mark-github-16" class="icon" />
+        )
+      }
+      <a href="/">{title}</a>
+
+
+  </nav>
+</header>
+
+<style>
+  header {
+    margin: 0;
+    padding: 0 1em;
+    background: white;
+    box-shadow: 0 2px 8px rgba(var(--black), 5%);
+  }
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 1em 0;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+  }
+  .logo a {
+    color: rgb(var(--black));
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.2em;
+  }
+  .icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  .internal-links {
+    display: flex;
+    gap: 1em;
+  }
+  .internal-links a {
+    color: rgb(var(--black));
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .internal-links a:hover {
+    text-decoration: underline;
+  }
+  .social-links {
+    display: flex;
+    gap: 0.5em;
+  }
+  .social-links a {
+    color: rgb(var(--black));
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(var(--black), 0.05);
+    transition: background 0.2s ease;
+  }
+  .social-links a:hover {
+    background: rgba(var(--black), 0.1);
+    color: var(--accent);
+  }
+  @media (max-width: 720px) {
+    .internal-links {
+      display: none;
+    }
+  }
+</style> 

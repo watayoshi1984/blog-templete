@@ -1,0 +1,57 @@
+---
+import { NUMBER_OF_POSTS_PER_PAGE } from '../../../server-constants.ts'
+import { getNumberOfPages } from '../../../lib/notion/client.ts'
+import type { Post } from '../../../lib/interfaces.ts'
+import Layout from '../../../layouts/Layout.astro'
+import NoContents from '../../../components/NoContents.astro'
+import PostDate from '../../../components/PostDate.astro'
+import PostTags from '../../../components/PostTags.astro'
+import PostTitle from '../../../components/PostTitle.astro'
+import PostFeaturedImage from '../../../components/PostFeaturedImage.astro'
+import PostExcerpt from '../../../components/PostExcerpt.astro'
+import ReadMoreLink from '../../../components/ReadMoreLink.astro'
+import Pagination from '../../../components/Pagination.astro'
+import styles from '../../../styles/blog.module.css'
+import { getPostsByPage } from '../../../lib/notion/client.ts';
+
+export async function getStaticPaths({ paginate }: any) {
+  const numberOfPages = await getNumberOfPages()
+  return paginate(Array(numberOfPages).fill(0), { pageSize: 1 })
+}
+
+const { page } = Astro.params
+const posts = await getPostsByPage(Number(page))
+const numberOfPages = await getNumberOfPages()
+---
+
+<Layout title={`ブログ記事一覧 ${page}ページ目`} description={`ブログ記事一覧 ${page}ページ目`} path={`/posts/page/${page}`} ogImage="/default-og-image.png">
+  <div slot="main" class={styles.main}>
+    {
+      posts.length === 0 ? (
+        <NoContents contents={posts} />
+      ) : (
+        posts.map((post) => (
+          <div class={styles.post}>
+            <PostDate post={post} enableLink={true} />
+            <PostTags post={post} enableLink={true} />
+            <PostTitle post={post} enableLink={true} />
+            <PostFeaturedImage post={post} />
+            <PostExcerpt post={post} />
+            <ReadMoreLink post={post} />
+          </div>
+        ))
+      )
+    }
+    <footer>
+      <Pagination currentPage={Number(page)} numberOfPages={numberOfPages} tag="" />
+    </footer>
+  </div>
+</Layout>
+
+<style>
+  main {
+    margin: auto;
+    padding: 1.5rem;
+    max-width: 60ch;
+  }
+</style>

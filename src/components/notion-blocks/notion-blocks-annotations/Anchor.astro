@@ -1,0 +1,38 @@
+---
+import { RichText } from '../../../lib/interfaces.ts'
+
+/**
+ * @interface Props
+ * @description Anchor.astroのPropsのインターフェース
+ */
+export interface Props {
+  richText: RichText
+}
+
+const { richText } = Astro.props
+---
+
+{
+  /* prettier-ignore
+     * Href属性が存在し、Mentionではない場合に<a>タグで囲む
+     * Href属性がない場合やMentionの場合は、そのままslotを表示する
+     * prettier-ignore を使用している理由：改行を保持するため
+     */
+  richText.Href && !richText.Mention ? (
+    <a href={richText.Href}><slot /></a>
+  ) : (
+    <slot />
+  )
+}
+
+<style>
+  a {
+    text-decoration: underline;
+  }
+</style>
+
+<!--
+  改善点:
+    - Propsのインターフェース定義をより具体的にする (例: RichText型の中身を定義)
+    - prettier-ignore が必要な理由をコメントに残す
+-->

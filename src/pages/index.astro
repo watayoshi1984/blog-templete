@@ -1,0 +1,59 @@
+---
+import { NUMBER_OF_POSTS_PER_PAGE } from '../server-constants.ts'
+import {
+  getPosts,
+  getRankedPosts,
+  getAllTags,
+  getNumberOfPages,
+} from '../lib/notion/client.ts'
+import Layout from '../layouts/Layout.astro'
+import NoContents from '../components/NoContents.astro'
+import PostDate from '../components/PostDate.astro'
+import PostTags from '../components/PostTags.astro'
+import PostTitle from '../components/PostTitle.astro'
+import PostFeaturedImage from '../components/PostFeaturedImage.astro'
+import PostExcerpt from '../components/PostExcerpt.astro'
+import ReadMoreLink from '../components/ReadMoreLink.astro'
+import Pagination from '../components/Pagination.astro'
+import BlogPostsLink from '../components/BlogPostsLink.astro'
+import BlogTagsLink from '../components/BlogTagsLink.astro'
+import styles from '../styles/blog.module.css'
+import '../styles/global.css'
+
+const [posts, rankedPosts, tags, numberOfPages] = await Promise.all([
+  getPosts(NUMBER_OF_POSTS_PER_PAGE),
+  getRankedPosts(),
+  getAllTags(),
+  getNumberOfPages(),
+])
+---
+<Layout title="ブログトップ" description="ブログのトップページです。" path="/" ogImage="/default-og-image.png">
+  <div slot="main" class={styles.main}>
+    {
+      posts.length === 0 ? (
+        <NoContents contents={posts} />
+      ) : (
+        posts.map((post) => (
+          <div class={styles.post}>
+            <PostDate post={post} enableLink={true} />
+            <PostTags post={post} enableLink={true} />
+            <PostTitle post={post} enableLink={true} />
+            <PostFeaturedImage post={post} />
+            <PostExcerpt post={post} />
+            <ReadMoreLink post={post} />
+          </div>
+        ))
+      )
+    }
+
+    <footer>
+      <Pagination currentPage={1} numberOfPages={numberOfPages} tag="" />
+    </footer>
+  </div>
+
+  <div slot="aside" class={styles.aside}>
+    <BlogPostsLink heading="最新の記事" posts={rankedPosts} />
+    <BlogTagsLink heading="カテゴリー一覧" tags={tags.filter(tag => tag.color === 'brown' || tag.color === 'orange' || tag.color === 'yellow' || tag.color === 'blue' || tag.color === 'red')} />
+    <BlogTagsLink heading="タグ一覧" tags={tags.filter(tag => tag.color === 'green' || tag.color === 'purple' || tag.color === 'gray')} />
+  </div>
+</Layout>

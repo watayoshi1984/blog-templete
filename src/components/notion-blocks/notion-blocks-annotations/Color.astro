@@ -1,0 +1,35 @@
+---
+import { RichText } from '../../../lib/interfaces.ts'
+import { snakeToKebab } from '../../../lib/style-helpers.ts'
+import '../../../styles/notion-color.css' /* Notionのカラー定義CSSをインポート */
+
+/**
+ * @interface Props
+ * @description Color.astroのPropsのインターフェース
+ */
+export interface Props {
+  richText: RichText
+}
+
+const { richText } = Astro.props
+---
+
+{
+  /* prettier-ignore
+     * Annotation.Colorが'default'以外の場合に<span>タグで囲み、カラークラスを適用する
+     * 'default'の場合は、そのままslotを表示する
+     * prettier-ignore を使用している理由：改行を保持するため
+     */
+  richText.Annotation.Color && richText.Annotation.Color !== 'default' ? (
+    <span class={snakeToKebab(richText.Annotation.Color)}><slot /></span>
+  ) : (
+    <slot />
+  )
+}
+
+<!--
+  改善点:
+    - Propsのインターフェース定義をより具体的にする (例: RichText型の中身を定義)
+    - snakeToKebab関数の説明を追加する (例: スネークケースをケバブケースに変換する関数)
+    - CSSファイルへの依存を減らす (例: CSS Modules, インラインスタイル)
+-->

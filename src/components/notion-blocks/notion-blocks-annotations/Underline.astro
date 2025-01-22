@@ -1,0 +1,31 @@
+---
+import { RichText } from '../../../lib/interfaces.ts'
+
+/**
+ * @interface Props
+ * @description Underline.astroのPropsのインターフェース
+ */
+export interface Props {
+  richText: RichText
+}
+
+const { richText } = Astro.props
+---
+
+{
+  /* prettier-ignore
+     * Annotation.Underlineが真の場合に<u>タグで囲む
+     * そうでない場合は、そのままslotを表示する
+     * prettier-ignore を使用している理由：改行を保持するため
+     */
+  richText.Annotation.Underline ? (
+    <u><slot /></u>
+  ) : (
+    <slot />
+  )
+}
+
+<!--
+  改善点:
+    - Propsのインターフェース定義をより具体的にする (例: RichText型の中身を定義)
+-->

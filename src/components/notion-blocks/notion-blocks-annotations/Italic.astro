@@ -1,0 +1,31 @@
+---
+import { RichText } from '../../../lib/interfaces.ts'
+
+/**
+ * @interface Props
+ * @description Italic.astroのPropsのインターフェース
+ */
+export interface Props {
+  richText: RichText
+}
+
+const { richText } = Astro.props
+---
+
+{
+  /* prettier-ignore
+     * Annotation.Italicが真の場合に<i>タグで囲む
+     * そうでない場合は、そのままslotを表示する
+     * prettier-ignore を使用している理由：改行を保持するため
+     */
+  richText.Annotation.Italic ? (
+    <i><slot /></i>
+  ) : (
+    <slot />
+  )
+}
+
+<!--
+  改善点:
+    - Propsのインターフェース定義をより具体的にする (例: RichText型の中身を定義)
+-->

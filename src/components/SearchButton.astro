@@ -1,0 +1,52 @@
+---
+import { Icon } from 'astro-icon/components';
+---
+
+<button class="search-button open-search-modal" type="button"><Icon name="octicon:search-24" /><span>記事を検索</span></button>
+
+<style>
+  .search-button {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: var(--color-bg);
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-text);
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-bottom: 1.5rem;
+    outline: 1px solid var(--color-border);
+    outline-offset: -4px;
+  }
+
+  .search-button:hover {
+    background: var(--color-bg-hover);
+    border-color: var(--color-primary);
+    outline-color: var(--color-primary);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .search-button svg {
+    width: 20px;
+    height: 20px;
+    margin-right: 0.2rem;
+  }
+  [astro-icon="octicon:search-24"] {
+    color: var(--fg);
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    function handleKeydown(event) {
+      if (event.keyCode === 75 && event.metaKey) {
+        // Ctrl+K or Cmd+K
+        document.querySelector('.open-search-modal').click()
+      }
+    }
+
+    document.addEventListener('keydown', handleKeydown)
+  })
+</script>

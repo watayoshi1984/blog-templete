@@ -1,0 +1,36 @@
+---
+const GA_ID = import.meta.env.PUBLIC_GA_ID;
+const GOOGLE_SITE_VERIFICATION = import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION;
+const ADSENSE_ID = import.meta.env.PUBLIC_ADSENSE_ID;
+---
+
+<!-- Google tag (gtag.js) -->
+{GA_ID && (
+  <Fragment>
+    <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}></script>
+    <script define:vars={{ GA_ID }}>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', GA_ID);
+    </script>
+  </Fragment>
+)}
+
+<!-- Google AdSense -->
+{ADSENSE_ID && (
+  <Fragment>
+    <script async src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_ID}`} crossorigin="anonymous"></script>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: ADSENSE_ID,
+        enable_page_level_ads: true
+      });
+    </script>
+  </Fragment>
+)}
+
+<!-- Google Search Console verification -->
+{GOOGLE_SITE_VERIFICATION && (
+  <meta name="google-site-verification" content={GOOGLE_SITE_VERIFICATION} />
+)}

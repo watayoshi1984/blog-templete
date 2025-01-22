@@ -1,0 +1,73 @@
+---
+const today = new Date();
+---
+
+<footer>
+  <nav class="footer-nav">
+    <ul>
+      <li><a href="/">ホーム</a></li>
+      <li><a href="/about">運営者</a></li>
+      <li><a href="/privacy-policy">プライバシー</a></li>
+      <li><a href="/contact">問合せ</a></li>
+    </ul>
+  </nav>
+  <div class="copyright">
+    <p>&copy; 2024 エンジニアの戯言. All rights reserved.</p>
+  </div>
+</footer>
+
+<style>
+  footer {
+    margin-top: 3rem;
+    padding: 2rem 0;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .footer-nav {
+    margin-bottom: 1.5rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .footer-nav ul {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    white-space: nowrap;
+  }
+
+  .footer-nav a {
+    color: var(--color-text);
+    text-decoration: none;
+    font-size: 0.95rem;
+  }
+
+  .footer-nav a:hover {
+    color: var(--color-primary);
+  }
+
+  .copyright {
+    text-align: center;
+    color: var(--color-text-light);
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 640px) {
+    footer {
+      margin-top: 2rem;
+      padding: 1.5rem 0;
+    }
+
+    .footer-nav ul {
+      gap: 1.5rem;
+      padding: 0 1rem;
+    }
+
+    .footer-nav a {
+      font-size: 0.9rem;
+    }
+  }
+</style> 
