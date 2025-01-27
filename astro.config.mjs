@@ -8,6 +8,7 @@ import PublicNotionCopier from './src/integrations/public-notion-copier';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import react from '@astrojs/react';
+import AstroPWA from '@vite-pwa/astro';
 
 const getSite = function () {
   if (CUSTOM_DOMAIN) {
@@ -39,6 +40,10 @@ const getSite = function () {
 export default defineConfig({
   site: getSite(),
   base: BASE_PATH,
+  vite: {
+    envDir: '.',
+    envPrefix: ['NOTION_', 'DATABASE_', 'VITE_']
+  },
   integrations: [
     icon({
       include: {
@@ -56,6 +61,36 @@ export default defineConfig({
       lastmod: new Date(),
     }),
     react(),
+    AstroPWA({
+      registerType: 'autoUpdate',
+      manifest: {
+        name: 'エンジニアの戯言',
+        short_name: '戯言',
+        description: 'エンジニアが生成AIとともに歩むAIXの道',
+        theme_color: '#2337ff',
+        background_color: '#ffffff',
+        icons: [
+          {
+            src: 'icon.jpg',
+            sizes: '192x192',
+            type: 'image/jpg'
+          },
+          {
+            src: 'icon.jpg',
+            sizes: '512x512',
+            type: 'image/jpg'
+          }
+        ]
+      },
+      workbox: {
+        navigateFallback: '/',
+        globPatterns: ['**/*.{css,js,html,svg,png,jpg,jpeg,gif,webp}']
+      },
+      devOptions: {
+        enabled: true,
+        navigateFallbackAllowlist: [/^\/404$/]
+      }
+    })
   ],
   markdown: {
     shikiConfig: {

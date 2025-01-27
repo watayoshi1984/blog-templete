@@ -52,9 +52,13 @@ import type {
   LinkToPage,
   Mention,
   Reference,
+  Author,
 } from '../interfaces'
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 import { Client, APIResponseError } from '@notionhq/client'
+
+console.log('NOTION_API_SECRET:', NOTION_API_SECRET)
+console.log('DATABASE_ID:', DATABASE_ID)
 
 const client = new Client({
   auth: NOTION_API_SECRET,
@@ -940,15 +944,15 @@ function _validPageObject(pageObject: responses.PageObject): boolean {
 }
 
 function _buildPost(pageObject: responses.PageObject): Post {
-  const prop = pageObject.properties
+  const prop = pageObject.properties;
 
-  let icon: FileObject | Emoji | null = null
+  let icon: FileObject | Emoji | null = null;
   if (pageObject.icon) {
     if (pageObject.icon.type === 'emoji' && 'emoji' in pageObject.icon) {
       icon = {
         Type: pageObject.icon.type,
         Emoji: pageObject.icon.emoji,
-      }
+      };
     } else if (
       pageObject.icon.type === 'external' &&
       'external' in pageObject.icon
@@ -956,33 +960,45 @@ function _buildPost(pageObject: responses.PageObject): Post {
       icon = {
         Type: pageObject.icon.type,
         Url: pageObject.icon.external?.url || '',
-      }
+      };
     }
   }
 
-  let cover: FileObject | null = null
+  let cover: FileObject | null = null;
   if (pageObject.cover) {
     cover = {
       Type: pageObject.cover.type,
       Url: pageObject.cover.external?.url || '',
-    }
+    };
   }
 
-  let featuredImage: FileObject | null = null
+  let featuredImage: FileObject | null = null;
   if (prop.FeaturedImage.files && prop.FeaturedImage.files.length > 0) {
     if (prop.FeaturedImage.files[0].external) {
       featuredImage = {
         Type: prop.FeaturedImage.type,
         Url: prop.FeaturedImage.files[0].external.url,
-      }
+      };
     } else if (prop.FeaturedImage.files[0].file) {
       featuredImage = {
         Type: prop.FeaturedImage.type,
         Url: prop.FeaturedImage.files[0].file.url,
         ExpiryTime: prop.FeaturedImage.files[0].file.expiry_time,
-      }
+      };
     }
   }
+
+  // 著者情報の取得
+  const author: Author = {
+    name: prop.Author?.select?.name || 'エンジニア',
+    profileImage: prop.AuthorImage?.files?.[0]?.external?.url || prop.AuthorImage?.files?.[0]?.file?.url || '/default-author.jpg',
+    description: prop.AuthorDescription?.rich_text?.map(rt => rt.plain_text).join('') || '',
+    socialLinks: {
+      twitter: prop.AuthorTwitter?.url || '',
+      github: prop.AuthorGithub?.url || '',
+      linkedin: prop.AuthorLinkedin?.url || '',
+    },
+  };
 
   const post: Post = {
     PageId: pageObject.id,
@@ -1002,9 +1018,10 @@ function _buildPost(pageObject: responses.PageObject): Post {
         : '',
     FeaturedImage: featuredImage,
     Rank: prop.Rank.number ? prop.Rank.number : 0,
-  }
+    Author: author,
+  };
 
-  return post
+  return post;
 }
 
 function _buildRichText(richTextObject: responses.RichTextObject): RichText {

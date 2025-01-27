@@ -1,7 +1,8 @@
 ---
 import { Image } from 'astro:assets';
-import { Icon } from 'astro-icon';
+import { Icon } from 'astro-icon/components';
 import { SITE_TITLE } from '../server-constants';
+import ThemeToggle from './ThemeToggle.astro';
 
 export interface Props {
   title?: string;
@@ -12,76 +13,102 @@ const { title = SITE_TITLE, iconPath } = Astro.props;
 ---
 
 <header>
-  <nav>
-    <div class="logo">
-      {
-        iconPath ? (
-          <Image
-            src={iconPath}
-            alt="Site Icon"
-            width={40}
-            height={40}
-            format="webp"
-            class="icon"
-          />
-        ) : (
-          <Icon name="octicon:mark-github-16" class="icon" />
-        )
-      }
-      <a href="/">{title}</a>
-
-
-  </nav>
+  <div class="header-content">
+    <div class="site-info">
+      <div class="logo">
+        {
+          iconPath ? (
+            <Image
+              src={iconPath}
+              alt="Site Icon"
+              width={40}
+              height={40}
+              format="webp"
+              class="icon"
+            />
+          ) : (
+            <Icon name="github" class="icon" />
+          )
+        }
+        <a href="/">{title}</a>
+      </div>
+    </div>
+    <div class="controls">
+      <ThemeToggle />
+    </div>
+  </div>
 </header>
 
 <style>
   header {
-    margin: 0;
-    padding: 0 1em;
-    background: white;
-    box-shadow: 0 2px 8px rgba(var(--black), 5%);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background-color: var(--color-background);
+    border-bottom: 1px solid var(--color-border);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
   }
-  nav {
+
+  .header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .site-info {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 1em 0;
+    gap: 1rem;
   }
+
+  .controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
   .logo {
     display: flex;
     align-items: center;
     gap: 0.5em;
   }
+
   .logo a {
-    color: rgb(var(--black));
+    color: var(--color-text);
     text-decoration: none;
     font-weight: 700;
     font-size: 1.2em;
   }
+
   .icon {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    object-fit: cover;
   }
+
   .internal-links {
     display: flex;
     gap: 1em;
   }
+
   .internal-links a {
     color: rgb(var(--black));
     text-decoration: none;
     font-weight: 500;
   }
+
   .internal-links a:hover {
     text-decoration: underline;
   }
+
   .social-links {
     display: flex;
     gap: 0.5em;
   }
+
   .social-links a {
     color: rgb(var(--black));
     text-decoration: none;
@@ -94,13 +121,19 @@ const { title = SITE_TITLE, iconPath } = Astro.props;
     background: rgba(var(--black), 0.05);
     transition: background 0.2s ease;
   }
+
   .social-links a:hover {
     background: rgba(var(--black), 0.1);
     color: var(--accent);
   }
-  @media (max-width: 720px) {
-    .internal-links {
-      display: none;
+
+  @media (max-width: 768px) {
+    .header-content {
+      padding: 0.5rem;
+    }
+    
+    .controls {
+      gap: 0.5rem;
     }
   }
 </style> 

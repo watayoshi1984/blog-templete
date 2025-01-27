@@ -16,6 +16,7 @@ export interface Post {
   Excerpt: string
   FeaturedImage: FileObject | null
   Rank: number
+  Author: Author
 }
 
 export interface Block {
@@ -266,4 +267,15 @@ export interface Mention {
 
 export interface Reference {
   Id: string
+}
+
+export interface Author {
+  name: string;
+  profileImage?: string;
+  description?: string;
+  socialLinks?: {
+    twitter?: string;
+    github?: string;
+    linkedin?: string;
+  };
 }

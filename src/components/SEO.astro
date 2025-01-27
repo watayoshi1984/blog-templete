@@ -1,0 +1,128 @@
+import { SEO } from 'astro-seo';
+import { SITE_TITLE, SITE_DESCRIPTION, SITE_URL } from '../server-constants';
+import { defaultAuthor } from '../lib/authors';
+
+export interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  article?: boolean;
+  publishDate?: string;
+  modifiedDate?: string;
+  author?: {
+    name: string;
+    profileImage?: string;
+    description?: string;
+    socialLinks?: {
+      twitter?: string;
+      github?: string;
+      linkedin?: string;
+    };
+  };
+  tags?: string[];
+}
+
+const {
+  title = SITE_TITLE,
+  description = SITE_DESCRIPTION,
+  image = '/default-og-image.png',
+  article = false,
+  publishDate,
+  modifiedDate,
+  author = defaultAuthor,
+  tags = [],
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, SITE_URL);
+const imageURL = new URL(image, SITE_URL);
+
+// 構造化データの生成
+const structuredData = article
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'BlogPosting',
+      headline: title,
+      description: description,
+      image: imageURL.toString(),
+      author: {
+        '@type': 'Person',
+        name: author.name,
+        description: author.description,
+        image: author.profileImage ? new URL(author.profileImage, SITE_URL).toString() : undefined,
+        sameAs: [
+          author.socialLinks?.twitter,
+          author.socialLinks?.github,
+          author.socialLinks?.linkedin,
+        ].filter(Boolean),
+      },
+      publisher: {
+        '@type': 'Organization',
+        name: SITE_TITLE,
+        logo: {
+          '@type': 'ImageObject',
+          url: new URL('/icon.jpg', SITE_URL).toString(),
+        },
+      },
+      datePublished: publishDate,
+      dateModified: modifiedDate || publishDate,
+      url: canonicalURL.toString(),
+      keywords: tags.join(', '),
+    }
+  : {
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      name: SITE_TITLE,
+      description: SITE_DESCRIPTION,
+      url: SITE_URL,
+    };
+
+<SEO
+  title={title}
+  description={description}
+  canonical={canonicalURL.toString()}
+  openGraph={{
+    basic: {
+      title,
+      type: article ? 'article' : 'website',
+      image: imageURL.toString(),
+      url: canonicalURL.toString(),
+    },
+    optional: {
+      description,
+      siteName: SITE_TITLE,
+      locale: 'ja_JP',
+    },
+    article: article
+      ? {
+          publishedTime: publishDate,
+          modifiedTime: modifiedDate,
+          authors: [author.name],
+          tags,
+        }
+      : undefined,
+    image: {
+      alt: title,
+    },
+  }}
+  twitter={{
+    card: 'summary_large_image',
+    title,
+    description,
+    image: imageURL.toString(),
+    creator: author.socialLinks?.twitter ? author.socialLinks.twitter.replace('https://twitter.com/', '@') : undefined,
+  }}
+  extend={{
+    meta: [
+      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+      { name: 'theme-color', content: '#2337ff' },
+      { name: 'generator', content: Astro.generator },
+    ],
+    link: [
+      { rel: 'icon', href: '/favicon.svg' },
+      { rel: 'sitemap', href: '/sitemap-index.xml' },
+      { rel: 'manifest', href: '/manifest.webmanifest' },
+    ],
+  }}
+/>
+
+<script type="application/ld+json" set:html={JSON.stringify(structuredData)} /> 

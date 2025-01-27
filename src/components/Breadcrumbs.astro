@@ -1,0 +1,100 @@
+---
+const { pathname } = Astro.url;
+const segments = pathname.split('/').filter(Boolean);
+
+interface Breadcrumb {
+  text: string;
+  href: string;
+}
+
+const breadcrumbs: Breadcrumb[] = segments.map((segment, index) => {
+  const href = `/${segments.slice(0, index + 1).join('/')}`;
+  const text = segment.replace(/-/g, ' ');
+  return { text, href };
+});
+---
+
+<nav aria-label="パンくずリスト" class="breadcrumbs">
+  <div class="breadcrumbs-container">
+    <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+      <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a href="/" itemprop="item">
+          <span itemprop="name">ホーム</span>
+        </a>
+        <meta itemprop="position" content="1" />
+      </li>
+      {
+        breadcrumbs.map((breadcrumb, index) => (
+          <li
+            itemprop="itemListElement"
+            itemscope
+            itemtype="https://schema.org/ListItem"
+          >
+            <a href={breadcrumb.href} itemprop="item">
+              <span itemprop="name">{breadcrumb.text}</span>
+            </a>
+            <meta itemprop="position" content={`${index + 2}`} />
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</nav>
+
+<style>
+  .breadcrumbs {
+    width: 100%;
+    background-color: var(--color-background);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .breadcrumbs-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: var(--spacing-4);
+  }
+
+  .breadcrumbs ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .breadcrumbs li {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    font-size: 0.875rem;
+  }
+
+  .breadcrumbs li:not(:last-child)::after {
+    content: '/';
+    margin: 0 0.5rem;
+    color: var(--color-text-light);
+  }
+
+  .breadcrumbs a {
+    color: var(--color-text);
+    text-decoration: none;
+    transition: color var(--transition-base);
+  }
+
+  .breadcrumbs a:hover {
+    color: var(--color-link);
+  }
+
+  @media (max-width: 1280px) {
+    .breadcrumbs-container {
+      padding: var(--spacing-4) var(--spacing-6);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .breadcrumbs-container {
+      padding: var(--spacing-2) var(--spacing-4);
+    }
+  }
+</style> 
