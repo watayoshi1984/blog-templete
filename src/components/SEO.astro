@@ -36,45 +36,88 @@ const {
 const canonicalURL = new URL(Astro.url.pathname, SITE_URL);
 const imageURL = new URL(image, SITE_URL);
 
+// パンくずリストの生成
+const pathSegments = Astro.url.pathname.split('/').filter(Boolean);
+const breadcrumbItems = [
+  {
+    '@type': 'ListItem',
+    position: 1,
+    name: 'ホーム',
+    item: SITE_URL,
+  },
+  ...pathSegments.map((segment, index) => ({
+    '@type': 'ListItem',
+    position: index + 2,
+    name: segment.charAt(0).toUpperCase() + segment.slice(1).replace(/-/g, ' '),
+    item: `${SITE_URL}/${pathSegments.slice(0, index + 1).join('/')}`,
+  })),
+];
+
+// デフォルトのキーワード
+const defaultKeywords = 'プログラミング, 技術ブログ, エンジニア, 開発, Web開発, フロントエンド, バックエンド';
+const keywords = tags.length > 0 ? `${defaultKeywords}, ${tags.join(', ')}` : defaultKeywords;
+
 // 構造化データの生成
-const structuredData = article
-  ? {
-      '@context': 'https://schema.org',
-      '@type': 'BlogPosting',
-      headline: title,
-      description: description,
-      image: imageURL.toString(),
-      author: {
-        '@type': 'Person',
-        name: author.name,
-        description: author.description,
-        image: author.profileImage ? new URL(author.profileImage, SITE_URL).toString() : undefined,
-        sameAs: [
-          author.socialLinks?.twitter,
-          author.socialLinks?.github,
-          author.socialLinks?.linkedin,
-        ].filter(Boolean),
-      },
-      publisher: {
-        '@type': 'Organization',
-        name: SITE_TITLE,
-        logo: {
-          '@type': 'ImageObject',
-          url: new URL('/icon.jpg', SITE_URL).toString(),
+const baseStructuredData = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    // パンくずリストの構造化データ
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: breadcrumbItems,
+    },
+    // 記事または WebSite の構造化データ
+    article
+      ? {
+          '@type': 'BlogPosting',
+          headline: title,
+          description: description,
+          image: imageURL.toString(),
+          author: {
+            '@type': 'Person',
+            name: author.name,
+            description: author.description,
+            image: author.profileImage ? new URL(author.profileImage, SITE_URL).toString() : undefined,
+            sameAs: [
+              author.socialLinks?.twitter,
+              author.socialLinks?.github,
+              author.socialLinks?.linkedin,
+            ].filter(Boolean),
+          },
+          publisher: {
+            '@type': 'Organization',
+            name: SITE_TITLE,
+            logo: {
+              '@type': 'ImageObject',
+              url: new URL('/icon.jpg', SITE_URL).toString(),
+            },
+          },
+          datePublished: publishDate,
+          dateModified: modifiedDate || publishDate,
+          url: canonicalURL.toString(),
+          keywords: keywords,
+          mainEntityOfPage: {
+            '@type': 'WebPage',
+            '@id': canonicalURL.toString(),
+          },
+          articleBody: description,
+        }
+      : {
+          '@type': 'WebSite',
+          name: SITE_TITLE,
+          description: SITE_DESCRIPTION,
+          url: SITE_URL,
+          potentialAction: {
+            '@type': 'SearchAction',
+            'target': {
+              '@type': 'EntryPoint',
+              'urlTemplate': `${SITE_URL}/search?q={search_term_string}`
+            },
+            'query-input': 'required name=search_term_string'
+          },
         },
-      },
-      datePublished: publishDate,
-      dateModified: modifiedDate || publishDate,
-      url: canonicalURL.toString(),
-      keywords: tags.join(', '),
-    }
-  : {
-      '@context': 'https://schema.org',
-      '@type': 'WebSite',
-      name: SITE_TITLE,
-      description: SITE_DESCRIPTION,
-      url: SITE_URL,
-    };
+  ],
+};
 
 <SEO
   title={title}
@@ -101,28 +144,42 @@ const structuredData = article
         }
       : undefined,
     image: {
+      url: imageURL.toString(),
       alt: title,
+      width: 1200,
+      height: 630,
+      type: 'image/png',
     },
   }}
   twitter={{
     card: 'summary_large_image',
+    site: author.socialLinks?.twitter ? author.socialLinks.twitter.replace('https://twitter.com/', '@') : undefined,
+    creator: author.socialLinks?.twitter ? author.socialLinks.twitter.replace('https://twitter.com/', '@') : undefined,
     title,
     description,
     image: imageURL.toString(),
-    creator: author.socialLinks?.twitter ? author.socialLinks.twitter.replace('https://twitter.com/', '@') : undefined,
   }}
   extend={{
     meta: [
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { name: 'theme-color', content: '#2337ff' },
       { name: 'generator', content: Astro.generator },
+      { name: 'keywords', content: keywords },
+      { name: 'author', content: author.name },
+      { name: 'robots', content: 'index, follow' },
+      { name: 'format-detection', content: 'telephone=no' },
+      { property: 'og:image:width', content: '1200' },
+      { property: 'og:image:height', content: '630' },
+      { name: 'twitter:card', content: 'summary_large_image' },
+      { name: 'msapplication-TileColor', content: '#2337ff' },
     ],
     link: [
       { rel: 'icon', href: '/favicon.svg' },
+      { rel: 'apple-touch-icon', href: '/icon.jpg' },
       { rel: 'sitemap', href: '/sitemap-index.xml' },
-      { rel: 'manifest', href: '/manifest.webmanifest' },
+      { rel: 'alternate', type: 'application/rss+xml', title: `${SITE_TITLE} RSS Feed`, href: '/feed' },
     ],
   }}
 />
 
-<script type="application/ld+json" set:html={JSON.stringify(structuredData)} /> 
+<script type="application/ld+json" set:html={JSON.stringify(baseStructuredData)} /> 
