@@ -1,3 +1,7 @@
+---
+export const client = "load";
+---
+
 <button
   id="themeToggle"
   class="theme-toggle"
@@ -51,45 +55,57 @@
   }
 </style>
 
-<script>
-  type Theme = 'light' | 'dark';
+<script is:inline>
+  const initTheme = () => {
+    const theme = (() => {
+      if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+        return localStorage.getItem('theme');
+      }
+      if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        return 'dark';
+      }
+      return 'light';
+    })();
 
-  document.addEventListener('astro:page-load', () => {
-    const themeToggle = document.getElementById('themeToggle');
-    
-    function setTheme(theme: Theme) {
-      if (theme === 'light') {
-        document.documentElement.classList.remove('dark');
-      } else {
+    function applyTheme(theme) {
+      if (theme === 'dark') {
         document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
       }
-      localStorage.setItem('theme', theme);
     }
 
-    function toggleTheme() {
-      const isDark = document.documentElement.classList.contains('dark');
-      setTheme(isDark ? 'light' : 'dark');
-    }
+    // 初期テーマを適用
+    applyTheme(theme);
 
-    if (themeToggle) {
-      themeToggle.addEventListener('click', toggleTheme);
-    }
-
-    // クリーンアップ
-    return () => {
-      if (themeToggle) {
-        themeToggle.removeEventListener('click', toggleTheme);
-      }
+    const handleToggleClick = () => {
+      const element = document.documentElement;
+      const isDark = element.classList.contains('dark');
+      const newTheme = isDark ? 'light' : 'dark';
+      
+      applyTheme(newTheme);
+      localStorage.setItem('theme', newTheme);
     };
-  });
 
-  // ページ遷移後のテーマ維持
+    const toggle = document.getElementById('themeToggle');
+    if (toggle) {
+      toggle.addEventListener('click', handleToggleClick);
+    }
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initTheme);
+  } else {
+    initTheme();
+  }
+
+  // View Transitions後のテーマ再適用
   document.addEventListener('astro:after-swap', () => {
-    const theme = localStorage.getItem('theme') as Theme || 'light';
-    if (theme === 'light') {
-      document.documentElement.classList.remove('dark');
-    } else {
+    const theme = localStorage.getItem('theme') || 'light';
+    if (theme === 'dark') {
       document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
     }
   });
 </script> 

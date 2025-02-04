@@ -1,5 +1,5 @@
 import type { Author } from './interfaces'
-import { SITE_AUTHOR, SITE_AUTHOR_DESCRIPTION } from '../server-constants'
+import { SITE_AUTHOR, SITE_AUTHOR_DESCRIPTION, SITE_AUTHOR_IMAGE, SITE_AUTHOR_SOCIAL } from '../server-constants'
 
 /**
  * Notionデータベースに以下のプロパティを追加してください：
@@ -32,18 +32,14 @@ import { SITE_AUTHOR, SITE_AUTHOR_DESCRIPTION } from '../server-constants'
 // デフォルトの著者情報
 export const defaultAuthor: Author = {
   name: SITE_AUTHOR,
-  profileImage: '/author.png',  // public/author.png を配置してください
+  profileImage: SITE_AUTHOR_IMAGE,
   description: SITE_AUTHOR_DESCRIPTION,
-  socialLinks: {
-    twitter: 'https://twitter.com/kafka',
-    github: 'https://github.com/kafka',
-    linkedin: 'https://www.linkedin.com/in/kafka',
-  },
+  socialLinks: SITE_AUTHOR_SOCIAL,
 }
 
 // 著者情報のマッピング
 export const authors: Record<string, Author> = {
-  'カフカ': defaultAuthor,
+  [SITE_AUTHOR]: defaultAuthor,
   // 他の著者を追加する場合は以下のようにマッピングを追加してください
   /*
   'デザイナー': {

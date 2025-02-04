@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://your-domain.com/sitemap-index.xml
+
+# Crawl-delay
+Crawl-delay: 10
+
+# Disallow
+Disallow: /api/
+Disallow: /.env
+Disallow: /node_modules/
+Disallow: /.git/ 

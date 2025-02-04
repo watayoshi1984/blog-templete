@@ -1,0 +1,37 @@
+# 基本設定
+Options +FollowSymLinks
+DirectoryIndex index.html
+
+# PHPの設定
+AddHandler application/x-httpd-php .php
+AddType application/x-httpd-php .php
+
+# 文字エンコーディング
+AddDefaultCharset UTF-8
+
+# セキュリティヘッダー
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+</IfModule>
+
+# URLリライトルール
+RewriteEngine On
+RewriteBase /
+RewriteRule ^index\.html$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.html [L]
+
+# ファイルアクセス制御
+<Files ~ "^\.">
+    Order allow,deny
+    Deny from all
+</Files>
+
+# エラーページ設定
+ErrorDocument 403 /index.html
+ErrorDocument 404 /index.html
+ErrorDocument 500 /index.html 

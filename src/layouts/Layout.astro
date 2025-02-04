@@ -3,6 +3,7 @@ import { PUBLIC_GA_TRACKING_ID, ENABLE_LIGHTBOX } from '../server-constants.ts'
 import { getDatabase } from '../lib/notion/client.ts'
 import { getNavLink, getStaticFilePath } from '../lib/blog-helpers.ts'
 import '../styles/syntax-coloring.css'
+import '../styles/global.css'
 import GoogleAnalytics from '../components/GoogleAnalytics.astro'
 import SearchModal from '../components/SearchModal.astro'
 import SearchButton from '../components/SearchButton.astro'
@@ -47,7 +48,7 @@ const coverImageURL = database.Cover?.Url || undefined
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
-    <BaseHead 
+    <BaseHead
       title={siteTitle}
       description={siteDescription}
       iconPath="/icon.jpg"
@@ -57,12 +58,35 @@ const coverImageURL = database.Cover?.Url || undefined
       siteURL={siteURL}
     />
     <GoogleAnalytics />
+    <script is:inline>
+      // 初期テーマの設定
+      function applyTheme(theme) {
+        if (theme === 'dark') {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      }
+
+      const theme = (() => {
+        if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+          return localStorage.getItem('theme');
+        }
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          return 'dark';
+        }
+        return 'light';
+      })();
+
+      // 即座にテーマを適用
+      applyTheme(theme);
+    </script>
   </head>
   <body>
     <div class="layout">
       <Header title={database.Title} iconPath={iconPath} />
       <SidebarToggle />
-      
+
       {coverImageURL && (
         <div class="hero">
           <Image
@@ -111,7 +135,7 @@ const coverImageURL = database.Cover?.Url || undefined
         width: 100%;
         height: min(360px, 30vh);
         overflow: hidden;
-        background: var(--color-bg-dark);
+        background: transparent;
       }
 
       .hero-image {
@@ -128,11 +152,13 @@ const coverImageURL = database.Cover?.Url || undefined
         width: min(1280px, 100% - 4rem);
         margin-inline: auto;
         padding: 3rem 0;
+        background: transparent;
       }
 
       main {
         min-width: 0;
         max-width: 800px;
+        background: transparent;
       }
 
       aside {
@@ -143,10 +169,11 @@ const coverImageURL = database.Cover?.Url || undefined
         position: sticky;
         top: 2rem;
         padding: 2rem;
-        background: var(--color-bg-secondary);
-        border: 1px solid var(--color-border);
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: var(--radius-lg);
         box-shadow: var(--shadow-sm);
+        backdrop-filter: blur(8px);
       }
 
       @media (max-width: 1200px) {
@@ -186,7 +213,7 @@ const coverImageURL = database.Cover?.Url || undefined
           height: 100vh;
           margin: 0;
           z-index: 150;
-          background: var(--color-bg);
+          background: transparent;
           transition: transform 0.3s ease;
         }
 
@@ -414,5 +441,15 @@ const coverImageURL = database.Cover?.Url || undefined
         layout?.classList.remove('sidebar-open');
       });
     </script>
+    <style is:global>
+      html, body {
+        background-color: transparent !important;
+      }
+    </style>
+    <style is:global>
+      :root {
+        --color-background: transparent !important;
+      }
+    </style>
   </body>
 </html>
