@@ -2,6 +2,7 @@
 import { ENABLE_LIGHTBOX } from '../../server-constants.ts'
 import * as interfaces from '../../lib/interfaces'
 import { filePath } from '../../lib/blog-helpers'
+import { optimizeImage, generatePictureTag } from '../../lib/utils/image-optimizer'
 import Caption from './Caption.astro'
 
 export interface Props {
@@ -11,11 +12,29 @@ export interface Props {
 const { block } = Astro.props
 
 let image = ''
-if (block.Image.External) {
+if (block.Image?.External) {
   image = block.Image.External.Url
-} else if (block.Image.File) {
+} else if (block.Image?.File) {
   image = filePath(new URL(block.Image.File.Url))
 }
+
+// 画像の最適化
+let optimizedImage;
+if (image && !import.meta.env.DEV) {
+  try {
+    optimizedImage = await optimizeImage(image);
+  } catch (error) {
+    console.error('画像の最適化に失敗しました:', error);
+  }
+}
+
+// レスポンシブ画像のサイズ設定
+const imageSizes = `
+  (min-width: 1280px) 1280px,
+  (min-width: 960px) 960px,
+  (min-width: 640px) 640px,
+  100vw
+`.trim();
 ---
 
 <figure class="image">
@@ -24,14 +43,44 @@ if (block.Image.External) {
       <div>
         <div>
           {ENABLE_LIGHTBOX ? (
-            <a data-fslightbox href={image} data-type="image">
-              <img src={image} alt="Image in a image block" loading="lazy" />
+            <a data-fslightbox href={optimizedImage?.fallback.src || image} data-type="image">
+              {optimizedImage ? (
+                <Fragment set:html={generatePictureTag(
+                  optimizedImage,
+                  "Image in a image block",
+                  "notion-image",
+                  "lazy",
+                  imageSizes
+                )} />
+              ) : (
+                <img 
+                  src={image} 
+                  alt="Image in a image block" 
+                  loading="lazy" 
+                  class="notion-image"
+                />
+              )}
             </a>
           ) : (
-            <img src={image} alt="Image in a image block" loading="lazy" />
+            optimizedImage ? (
+              <Fragment set:html={generatePictureTag(
+                optimizedImage,
+                "Image in a image block",
+                "notion-image",
+                "lazy",
+                imageSizes
+              )} />
+            ) : (
+              <img 
+                src={image} 
+                alt="Image in a image block" 
+                loading="lazy" 
+                class="notion-image"
+              />
+            )
           )}
         </div>
-        <Caption richTexts={block.Image.Caption} />
+        {block.Image?.Caption && <Caption richTexts={block.Image.Caption} />}
       </div>
     )
   }
@@ -41,14 +90,20 @@ if (block.Image.External) {
   .image {
     display: flex;
     margin: 0.2rem auto 0;
+    width: 100%;
   }
   .image > div {
     margin: 0 auto;
+    width: 100%;
   }
   .image > div > div {
+    width: 100%;
   }
-  .image > div > div img {
+  .notion-image {
     display: block;
     max-width: 100%;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
   }
 </style>

@@ -1,6 +1,7 @@
 ---
-import { Post } from '../lib/interfaces.ts'
+import type { Post } from '../lib/interfaces.ts'
 import { filePath } from '../lib/blog-helpers'
+import { optimizeImage, generatePictureTag } from '../lib/utils/image-optimizer'
 
 export interface Props {
   post: Post
@@ -16,12 +17,45 @@ if (post.FeaturedImage && post.FeaturedImage.Url) {
     image = filePath(new URL(post.FeaturedImage.Url))
   }
 }
+
+// 画像の最適化
+let optimizedImage;
+if (image && !import.meta.env.DEV) {
+  try {
+    optimizedImage = await optimizeImage(image);
+  } catch (error) {
+    console.error('画像の最適化に失敗しました:', error);
+  }
+}
+
+// レスポンシブ画像のサイズ設定
+const imageSizes = `
+  (min-width: 1280px) 1280px,
+  (min-width: 960px) 960px,
+  (min-width: 640px) 640px,
+  100vw
+`.trim();
 ---
 
 {
   image && (
     <div class="post-featured-image">
-      <img src={image} alt="Featured image of the post" />
+      {optimizedImage ? (
+        <Fragment set:html={generatePictureTag(
+          optimizedImage,
+          "Featured image of the post",
+          "featured-image",
+          "lazy",
+          imageSizes
+        )} />
+      ) : (
+        <img 
+          src={image} 
+          alt="Featured image of the post" 
+          loading="lazy" 
+          class="featured-image"
+        />
+      )}
     </div>
   )
 }
@@ -29,10 +63,14 @@ if (post.FeaturedImage && post.FeaturedImage.Url) {
 <style>
   .post-featured-image {
     padding: 0.6rem 0 0.2rem;
+    width: 100%;
   }
-  .post-featured-image img {
+  .featured-image {
     display: block;
     max-width: 100%;
     max-height: 20rem;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
   }
 </style>
