@@ -1,21 +1,66 @@
-<div class="max-w-2xl mx-auto p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+---
+// デバイスごとの高さを設定
+const heights = {
+  mobile: '800px',    // モバイル用
+  tablet: '900px',    // タブレット用
+  desktop: '1000px',  // デスクトップ用
+}
+---
+
+<div class="form-container">
   <iframe 
     src="https://docs.google.com/forms/d/e/1FAIpQLSe61EnvwOVmPfU1FF5AsPjGVpOLuKWmSydhGfoY_PZq41-XLw/viewform?embedded=true" 
-    class="w-full min-h-[873px] border-0"
+    class="contact-form"
     title="お問い合わせフォーム"
     loading="lazy">
     読み込んでいます...
   </iframe>
 </div>
 
-<style>
-  iframe {
+<style define:vars={{ 
+  heightMobile: heights.mobile, 
+  heightTablet: heights.tablet, 
+  heightDesktop: heights.desktop 
+}}>
+  .form-container {
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    background: var(--color-bg);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .contact-form {
+    width: 100%;
+    height: var(--heightMobile);
+    border: none;
     background: transparent;
   }
-  
+
+  /* タブレット以上のサイズ */
+  @media (min-width: 768px) {
+    .form-container {
+      max-width: 90%;
+    }
+    .contact-form {
+      height: var(--heightTablet);
+    }
+  }
+
+  /* デスクトップサイズ */
+  @media (min-width: 1024px) {
+    .form-container {
+      max-width: 80%;
+    }
+    .contact-form {
+      height: var(--heightDesktop);
+    }
+  }
+
   /* ダークモード対応 */
   @media (prefers-color-scheme: dark) {
-    iframe {
+    .contact-form {
       filter: invert(0.9) hue-rotate(180deg);
     }
   }
