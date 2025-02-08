@@ -1,0 +1,19 @@
+---
+const { post } = Astro.props;
+---
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "{post.title}",
+  "datePublished": "{post.publishedAt}",
+  "image": [
+    "{post.coverImage.url}?w=1200&format=avif"
+  ],
+  "author": {
+    "@type": "Person",
+    "name": "著者名",
+    "url": "https://example.com/about"
+  }
+}
+</script> 

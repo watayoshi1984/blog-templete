@@ -2,6 +2,7 @@
 import type { Post } from '../lib/interfaces.ts'
 import { filePath } from '../lib/blog-helpers'
 import { optimizeImage, generatePictureTag } from '../lib/utils/image-optimizer'
+import { downloadImage } from '../lib/utils/image-downloader'
 
 export interface Props {
   post: Post
@@ -10,21 +11,19 @@ export interface Props {
 const { post } = Astro.props
 
 let image = ''
+let optimizedImage
 if (post.FeaturedImage && post.FeaturedImage.Url) {
-  if (import.meta.env.DEV) {
-    image = post.FeaturedImage.Url
-  } else {
-    image = filePath(new URL(post.FeaturedImage.Url))
-  }
-}
-
-// 画像の最適化
-let optimizedImage;
-if (image && !import.meta.env.DEV) {
   try {
-    optimizedImage = await optimizeImage(image);
+    // 1. Download the image from Notion
+    const imageUrl = new URL(post.FeaturedImage.Url)
+    const localPath = filePath(imageUrl)
+    await downloadImage(imageUrl.toString(), localPath)
+    
+    // 2. Optimize the downloaded image
+    optimizedImage = await optimizeImage(localPath)
   } catch (error) {
-    console.error('画像の最適化に失敗しました:', error);
+    console.error('画像の処理に失敗しました:', error)
+    image = post.FeaturedImage.Url
   }
 }
 
@@ -38,7 +37,7 @@ const imageSizes = `
 ---
 
 {
-  image && (
+  (image || optimizedImage) && (
     <div class="post-featured-image">
       {optimizedImage ? (
         <Fragment set:html={generatePictureTag(

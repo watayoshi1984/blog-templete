@@ -14,6 +14,12 @@ interface ImportMetaEnv {
   readonly TOP_K: string;
   readonly TOP_P: string;
   readonly GIT_HUB: string;
+
+  // フォント設定
+  readonly FONT_FAMILY: 'Zen Maru Gothic' | 'Zen Kaku Gothic New' | 'LINE Seed JP' | 'M PLUS 1' | 'M PLUS Rounded 1c' | 'Nicomoji Plus';
+  readonly FONT_WEIGHTS: string; // "400,700"
+  readonly FONT_DISPLAY: 'swap' | 'block' | 'fallback' | 'optional' | 'auto';
+  readonly FONT_SUBSET: string; // "latin,japanese"
 }
 
 interface ImportMeta {

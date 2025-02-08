@@ -1,0 +1,39 @@
+---
+// フォント設定を環境変数から読み込む
+const FONT_FAMILY = import.meta.env.FONT_FAMILY || 'Noto Sans JP';
+const FONT_WEIGHTS = (import.meta.env.FONT_WEIGHTS || '400,700').split(',');
+const FONT_DISPLAY = import.meta.env.FONT_DISPLAY || 'swap';
+const FONT_SUBSET = import.meta.env.FONT_SUBSET || 'latin,japanese';
+
+// Google Fonts URLの生成
+const weights = FONT_WEIGHTS.map(weight => weight.trim());
+const subsets = FONT_SUBSET.split(',').map(subset => subset.trim());
+const fontFamily = FONT_FAMILY.replace(/ /g, '+');
+const googleFontsUrl = `https://fonts.googleapis.com/css2?family=${fontFamily}:wght@${weights.join(';')}&display=${FONT_DISPLAY}&subset=${subsets.join(',')}`;
+---
+
+<!-- Google Fontsの読み込み -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href={googleFontsUrl} rel="stylesheet">
+
+<style is:global define:vars={{ fontFamily: FONT_FAMILY }}>
+  :root {
+    --font-family-base: var(--fontFamily), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+  }
+
+  /* 基本フォント設定 */
+  body {
+    font-family: var(--font-family-base);
+  }
+
+  /* Notionコンテンツ用のフォント設定 */
+  :global(.notion) {
+    font-family: var(--font-family-base);
+  }
+
+  /* 見出し用のフォント設定 */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-family-base);
+  }
+</style> 

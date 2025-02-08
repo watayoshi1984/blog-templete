@@ -15,6 +15,8 @@ import Breadcrumbs from '../components/Breadcrumbs.astro'
 import { SITE_TITLE, SITE_DESCRIPTION } from '../server-constants'
 import type { Post } from '../lib/interfaces'
 import SidebarToggle from '../components/SidebarToggle.astro'
+import LocalFontLoader from '../components/LocalFontLoader.astro'
+import ThemeToggle from '../components/ThemeToggle.astro'
 
 export interface Props {
   title: string
@@ -81,6 +83,7 @@ const coverImageURL = database.Cover?.Url || undefined
       // 即座にテーマを適用
       applyTheme(theme);
     </script>
+    <LocalFontLoader />
   </head>
   <body>
     <div class="layout">
@@ -110,6 +113,7 @@ const coverImageURL = database.Cover?.Url || undefined
 
         <aside>
           <div class="sidebar-content">
+            <ThemeToggle />
             <SearchButton />
             <slot name="aside" />
           </div>
@@ -361,6 +365,27 @@ const coverImageURL = database.Cover?.Url || undefined
       .layout.sidebar-open .sidebar-overlay {
         display: block;
         opacity: 1;
+      }
+
+      :global(.theme-toggle) {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        margin-bottom: 1rem;
+        background: var(--color-background);
+        border: 2px solid var(--color-border);
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        transition: all 0.2s ease;
+      }
+
+      :global(.theme-toggle:hover) {
+        background: var(--color-background-alt);
+        border-color: var(--color-primary);
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-sm);
       }
     </style>
 

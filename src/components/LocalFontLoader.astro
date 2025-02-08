@@ -1,0 +1,49 @@
+---
+// フォント設定を環境変数から読み込む
+const fontFamily = import.meta.env.FONT_FAMILY || 'LINE Seed JP';
+const fontWeights = (import.meta.env.FONT_WEIGHTS || '400,700').split(',');
+const FONT_DISPLAY = import.meta.env.FONT_DISPLAY || 'swap';
+
+interface FontDefinition {
+  name: string;
+  weights: string[];
+}
+
+// 利用可能なフォントの定義
+const AVAILABLE_FONTS: Record<string, FontDefinition> = {
+  'LINE Seed JP': {
+    name: 'LINE Seed JP',
+    weights: ['400', '700']
+  }
+} as const;
+
+const selectedFont = AVAILABLE_FONTS[fontFamily] || AVAILABLE_FONTS['LINE Seed JP'];
+---
+
+<style is:global define:vars={{ fontFamily: `'${selectedFont.name}'` }}>
+  :root {
+    --font-family-base: var(--fontFamily), system-ui;
+  }
+
+  /* 基本フォント設定 */
+  body {
+    font-family: var(--font-family-base);
+  }
+
+  /* Notionコンテンツ用のフォント設定 */
+  :global(.notion) {
+    font-family: var(--font-family-base);
+  }
+
+  /* 見出し用のフォント設定 */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-family-base);
+  }
+</style>
+
+<script define:vars={{ fontWeights }}>
+  // フォントウェイトの動的な適用はJavaScriptで行う
+  fontWeights.forEach(weight => {
+    // 必要に応じてここでフォントの動的な設定を行う
+  });
+</script>

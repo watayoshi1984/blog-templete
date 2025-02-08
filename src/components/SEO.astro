@@ -107,6 +107,19 @@ const baseStructuredData = {
           name: SITE_TITLE,
           description: SITE_DESCRIPTION,
           url: SITE_URL,
+          publisher: {
+            '@type': 'Organization',
+            name: SITE_TITLE,
+            logo: {
+              '@type': 'ImageObject',
+              url: new URL('/icon.jpg', SITE_URL).toString(),
+            },
+            sameAs: [
+              defaultAuthor.socialLinks?.twitter,
+              defaultAuthor.socialLinks?.github,
+              defaultAuthor.socialLinks?.linkedin,
+            ].filter(Boolean),
+          },
           potentialAction: {
             '@type': 'SearchAction',
             'target': {
@@ -116,8 +129,36 @@ const baseStructuredData = {
             'query-input': 'required name=search_term_string'
           },
         },
+    // サイト全体の組織情報
+    {
+      '@type': 'Organization',
+      name: SITE_TITLE,
+      url: SITE_URL,
+      logo: {
+        '@type': 'ImageObject',
+        url: new URL('/icon.jpg', SITE_URL).toString(),
+      },
+      description: SITE_DESCRIPTION,
+      sameAs: [
+        defaultAuthor.socialLinks?.twitter,
+        defaultAuthor.socialLinks?.github,
+        defaultAuthor.socialLinks?.linkedin,
+      ].filter(Boolean),
+    },
   ],
 };
+
+// 検索ページの場合、SearchActionを追加
+if (Astro.url.pathname === '/search') {
+  baseStructuredData['@graph'].push({
+    '@type': 'SearchAction',
+    'target': {
+      '@type': 'EntryPoint',
+      'urlTemplate': `${SITE_URL}/search?q={search_term_string}`
+    },
+    'query-input': 'required name=search_term_string'
+  });
+}
 
 <SEO
   title={title}

@@ -1,0 +1,8 @@
+/* サブセット化されたWOFF2フォントの定義 */
+@font-face {
+  font-family: 'LINE Seed JP';
+  src: url('/fonts/lineseedjp-subset.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+  unicode-range: U+3000-30FF, U+FF00-FFEF, U+4E00-9FFF;
+} 

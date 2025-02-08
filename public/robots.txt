@@ -1,0 +1,21 @@
+User-agent: *
+Allow: /
+Allow: /posts/
+Allow: /about/
+Allow: /contact/
+
+# Sitemaps
+Sitemap: https://your-domain.com/sitemap-index.xml
+Sitemap: https://your-domain.com/sitemap-0.xml
+
+# Crawl-delay
+Crawl-delay: 10
+
+# Disallow
+Disallow: /api/
+Disallow: /_astro/
+Disallow: /scripts/
+Disallow: /fonts/
+Disallow: /.env
+Disallow: /node_modules/
+Disallow: /.git/ 
