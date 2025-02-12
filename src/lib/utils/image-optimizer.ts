@@ -1,6 +1,8 @@
 import sharp from 'sharp';
 import path from 'path';
 import fs from 'fs/promises';
+import axios from 'axios';
+import crypto from 'crypto';
 
 interface OptimizedImageResult {
   avif: {
@@ -20,6 +22,13 @@ interface OptimizedImageResult {
 // 生成する画像サイズ（幅）の定義
 const SIZES = [320, 640, 960, 1280, 1600, 1920];
 
+async function downloadImage(url: string): Promise<Buffer> {
+  const response = await axios.get(url, {
+    responseType: 'arraybuffer'
+  });
+  return Buffer.from(response.data, 'binary');
+}
+
 export async function optimizeImage(
   imagePath: string,
   outputDir: string = 'public/optimized'
@@ -27,11 +36,29 @@ export async function optimizeImage(
   // 出力ディレクトリが存在しない場合は作成
   await fs.mkdir(outputDir, { recursive: true });
 
-  const filename = path.basename(imagePath, path.extname(imagePath));
+  let imageBuffer: Buffer;
+  let filename: string;
+
+  // URLの場合はダウンロードして一時ファイル名を生成
+  if (imagePath.startsWith('http')) {
+    try {
+      imageBuffer = await downloadImage(imagePath);
+      // URLからハッシュを生成してファイル名として使用
+      const hash = crypto.createHash('md5').update(imagePath).digest('hex');
+      filename = `external-${hash}`;
+    } catch (error) {
+      console.error('外部画像のダウンロードに失敗しました:', error);
+      throw error;
+    }
+  } else {
+    filename = path.basename(imagePath, path.extname(imagePath));
+    imageBuffer = await fs.readFile(imagePath);
+  }
+
   const outputBasePath = path.join(outputDir, filename);
 
   // 画像を読み込む
-  const image = sharp(imagePath);
+  const image = sharp(imageBuffer);
   const metadata = await image.metadata();
   const originalWidth = metadata.width || 1920;
 

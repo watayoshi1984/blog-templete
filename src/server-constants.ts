@@ -12,13 +12,13 @@ export const MATOMO_URL = import.meta.env.VITE_MATOMO_URL || ''
 export const MATOMO_SITE_ID = import.meta.env.VITE_MATOMO_SITE_ID || ''
 
 // Site Information
-export const SITE_TITLE = import.meta.env.VITE_SITE_TITLE || 'エンジニアの戯言'
-export const SITE_DESCRIPTION = import.meta.env.VITE_SITE_DESCRIPTION || 'エンジニアが生成AIとともに歩むAIXの道'
+export const SITE_TITLE = import.meta.env.VITE_SITE_TITLE || 'NEXT Nurse｜3回転職を経験した看護師による仕事で悩む若手看護師に捧げるキャリアブログ'
+export const SITE_DESCRIPTION = import.meta.env.VITE_SITE_DESCRIPTION || '看護師として3回の転職経験を持つ現役ナースが運営する、若手看護師向けキャリアブログ。仕事の悩みやキャリアプランニングについて実践的なアドバイスを提供します。'
 
 // Author Information
-export const SITE_AUTHOR = import.meta.env.VITE_AUTHOR_NAME || 'カフカ'
-export const SITE_AUTHOR_DESCRIPTION = import.meta.env.VITE_AUTHOR_DESCRIPTION || 'AIとWeb技術を探求するエンジニア'
-export const SITE_AUTHOR_IMAGE = import.meta.env.VITE_AUTHOR_IMAGE || '/author.png'
+export const SITE_AUTHOR = import.meta.env.VITE_AUTHOR_NAME || 'カンナ'
+export const SITE_AUTHOR_DESCRIPTION = import.meta.env.VITE_AUTHOR_DESCRIPTION || '看護師として10年間、様々な医療現場で勤務。3回の転職を経験し、それぞれの経験から多くを学びました。現在は総合病院で勤務しながら、若手看護師のキャリア支援に携わっています。'
+export const SITE_AUTHOR_IMAGE = import.meta.env.VITE_AUTHOR_IMAGE || '/auther.png'
 export const SITE_AUTHOR_SOCIAL = {
   twitter: import.meta.env.VITE_AUTHOR_TWITTER || '',
   github: import.meta.env.VITE_AUTHOR_GITHUB || '',
@@ -36,7 +36,7 @@ export const REQUEST_TIMEOUT_MS = parseInt(import.meta.env.REQUEST_TIMEOUT_MS ||
 export const ENABLE_LIGHTBOX = import.meta.env.ENABLE_LIGHTBOX
 
 // SEO設定
-export const SEO_KEYWORDS = import.meta.env.VITE_SEO_KEYWORDS || 'プログラミング, 技術ブログ, エンジニア, 開発, Web開発, フロントエンド, バックエンド'
+export const SEO_KEYWORDS = import.meta.env.VITE_SEO_KEYWORDS || '看護師, キャリア, 転職, 医療, 病院, メンタルヘルス, 新人看護師, キャリアプラン, ワークライフバランス'
 export const SITE_LOGO = import.meta.env.VITE_SITE_LOGO || '/icon.jpg'
 export const DEFAULT_OG_IMAGE = import.meta.env.VITE_DEFAULT_OG_IMAGE || '/default-og-image.png'
 

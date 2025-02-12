@@ -7,11 +7,23 @@ export interface Props {
 }
 
 const { block } = Astro.props
+
+// 全角文字を半角に変換する関数
+function convertToHalfWidth(str: string): string {
+  return str.replace(/[Ａ-Ｚａ-ｚ０-９]/g, function(s) {
+    return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+  })
+  .replace(/[＾]/g, '^')
+  .replace(/[．]/g, '.')
+  .replace(/[−]/g, '-');
+}
+
+const expression = convertToHalfWidth(block.Equation.Expression);
 ---
 
 <div
   class="equation"
-  set:html={katex.renderToString(block.Equation.Expression, {
+  set:html={katex.renderToString(expression, {
     throwOnError: false,
   })}
 />

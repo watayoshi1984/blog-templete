@@ -8,6 +8,7 @@ import PublicNotionCopier from './src/integrations/public-notion-copier';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import react from '@astrojs/react';
+import compress from 'astro-compress';
 
 const getSite = function () {
   if (CUSTOM_DOMAIN) {
@@ -43,12 +44,40 @@ export default defineConfig({
   outDir: 'dist',
   trailingSlash: 'never',
   build: {
-    format: 'directory'
+    format: 'file',
+    assets: 'assets',
+    inlineStylesheets: 'auto',
+    optimizeDeps: {
+      exclude: ['@notionhq/client']
+    }
   },
   vite: {
     envDir: '.',
-    envPrefix: ['NOTION_', 'DATABASE_', 'VITE_']
+    envPrefix: ['NOTION_', 'DATABASE_', 'VITE_'],
+    build: {
+      cssCodeSplit: true,
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            'vendor': ['react', 'react-dom'],
+            'notion': ['@notionhq/client']
+          }
+        }
+      },
+      assetsInlineLimit: 4096,
+      cssMinify: true,
+      minify: true
+    }
   },
+  image: {
+    service: {
+      entrypoint: 'astro/assets/services/sharp',
+      config: {
+        quality: 80,
+      },
+    },
+  },
+  compressHTML: true,
   integrations: [
     icon({
       include: {
@@ -65,7 +94,65 @@ export default defineConfig({
       priority: 0.7,
       lastmod: new Date(),
     }),
-    react()
+    react(),
+    compress({
+      CSS: true,
+      HTML: {
+        removeAttributeQuotes: false,
+      },
+      Image: {
+        input: [
+          'dist/notion/**/*.{jpg,png,gif,jpeg}',
+          'public/**/*.{jpg,png,gif,jpeg}',
+        ],
+        excludeFiles: [
+          /.*astro-notion-blog.*/,
+          /.*-1920\..*/,
+          /.*-1600\..*/,
+          /.*-1280\..*/,
+          /.*&.*$/,
+          /.*\?.*/,
+          /.*-original\..*/,
+          /.*\.processed\..*/,
+          /.*\.min\..*/,
+          /optimized\//,
+        ],
+        format: ['webp'],
+        sizes: [320, 640, 960],
+        quality: {
+          webp: 80,
+        },
+        errorOnUnusedImage: false,
+        logStats: true,
+        sharp: {
+          animated: false,
+          failOnError: false,
+          limitInputPixels: 50000000, // 50MP
+          withMetadata: false,
+        },
+      },
+      JavaScript: {
+        compress: {
+          passes: 2,
+        },
+      },
+      SVG: {
+        multipass: true,
+        plugins: [
+          {
+            name: 'preset-default',
+            params: {
+              overrides: {
+                removeViewBox: false,
+                convertPathData: false,
+                mergePaths: false,
+                cleanupIDs: false,
+              },
+            },
+          },
+        ],
+      },
+    })
   ],
   markdown: {
     shikiConfig: {

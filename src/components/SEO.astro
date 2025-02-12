@@ -54,19 +54,17 @@ const breadcrumbItems = [
 ];
 
 // デフォルトのキーワード
-const defaultKeywords = 'プログラミング, 技術ブログ, エンジニア, 開発, Web開発, フロントエンド, バックエンド';
+const defaultKeywords = '看護師, キャリア, 転職, メンタルヘルス, スキルアップ, 若手看護師, キャリアアップ, 看護師転職, 看護師の悩み, 職場環境';
 const keywords = tags.length > 0 ? `${defaultKeywords}, ${tags.join(', ')}` : defaultKeywords;
 
 // 構造化データの生成
 const baseStructuredData = {
   '@context': 'https://schema.org',
   '@graph': [
-    // パンくずリストの構造化データ
     {
       '@type': 'BreadcrumbList',
       itemListElement: breadcrumbItems,
     },
-    // 記事または WebSite の構造化データ
     article
       ? {
           '@type': 'BlogPosting',
@@ -129,7 +127,6 @@ const baseStructuredData = {
             'query-input': 'required name=search_term_string'
           },
         },
-    // サイト全体の組織情報
     {
       '@type': 'Organization',
       name: SITE_TITLE,

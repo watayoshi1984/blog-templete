@@ -27,7 +27,7 @@ const [posts, rankedPosts, tags, numberOfPages] = await Promise.all([
   getNumberOfPages(),
 ])
 ---
-<Layout title="ブログトップ" description="ブログのトップページです。" path="/" ogImage="/default-og-image.png">
+<Layout title="NEXT Nurse｜3回転職を経験した看護師による仕事で悩む若手看護師に捧げるキャリアブログ" description="看護師として3回の転職経験を持つ現役ナースが、若手看護師の悩みやキャリアについて発信するブログです。転職、メンタルヘルス、スキルアップなど、実践的なアドバイスを提供しています。" path="/" ogImage="/default-og-image.png">
   <div slot="main" class={styles.main}>
     {
       posts.length === 0 ? (

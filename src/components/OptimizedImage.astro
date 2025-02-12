@@ -1,0 +1,70 @@
+---
+interface Props {
+  src: string;
+  alt: string;
+  width?: number;
+  height?: number;
+  class?: string;
+  loading?: "lazy" | "eager";
+  decoding?: "async" | "sync" | "auto";
+}
+
+const {
+  src,
+  alt,
+  width,
+  height,
+  class: className = "",
+  loading = "lazy",
+  decoding = "async",
+} = Astro.props;
+
+// 画像の拡張子を取得
+const ext = src.split('.').pop()?.toLowerCase();
+// 元の画像がJPEGまたはPNGの場合のみWebP/AVIF変換を考慮
+const supportsModernFormat = ['jpg', 'jpeg', 'png'].includes(ext || '');
+
+// 外部URLかどうかを判定
+const isExternalUrl = src.startsWith('http') || src.startsWith('//');
+
+// WebP/AVIFのパスを生成（外部URLの場合は変換しない）
+const basePath = !isExternalUrl ? src.substring(0, src.lastIndexOf('.')) : src;
+const webpSrc = !isExternalUrl && supportsModernFormat ? `${basePath}.webp` : null;
+const avifSrc = !isExternalUrl && supportsModernFormat ? `${basePath}.avif` : null;
+---
+
+<picture>
+  {avifSrc && (
+    <source
+      srcset={avifSrc}
+      type="image/avif"
+      {width}
+      {height}
+    />
+  )}
+  {webpSrc && (
+    <source
+      srcset={webpSrc}
+      type="image/webp"
+      {width}
+      {height}
+    />
+  )}
+  <img
+    src={src}
+    alt={alt}
+    width={width}
+    height={height}
+    class={className}
+    loading={loading}
+    decoding={decoding}
+  />
+</picture>
+
+<style>
+  img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+</style> 

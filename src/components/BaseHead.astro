@@ -65,8 +65,8 @@ const ogImageURL = ogImage || post?.FeaturedImage?.Url || coverImageURL;
 <style>
   /* Global styles */
   :root {
-    --accent: #2337ff;
-    --accent-dark: #000d8a;
+    --accent: #4CAF50;  /* 医療・看護を連想させる緑色 */
+    --accent-dark: #388E3C;
     --black: 15, 18, 25;
     --gray: 96, 115, 159;
     --gray-light: 229, 233, 240;
@@ -86,7 +86,7 @@ const ogImageURL = ogImage || post?.FeaturedImage?.Url || coverImageURL;
     overflow-wrap: break-word;
     color: rgb(var(--gray-dark));
     font-size: 16px;
-    line-height: 1.7;
+    line-height: 1.8;  /* 行間を少し広げて読みやすく */
   }
   main {
     width: 100%;
@@ -105,19 +105,19 @@ const ogImageURL = ogImage || post?.FeaturedImage?.Url || coverImageURL;
     line-height: 1.2;
   }
   h1 {
-    font-size: 2.5em;
+    font-size: 2.2em;  /* 少し小さめに */
   }
   h2 {
-    font-size: 2em;
+    font-size: 1.8em;
   }
   h3 {
-    font-size: 1.75em;
-  }
-  h4 {
     font-size: 1.5em;
   }
+  h4 {
+    font-size: 1.3em;
+  }
   h5 {
-    font-size: 1.25em;
+    font-size: 1.1em;
   }
   strong,
   b {
@@ -166,9 +166,11 @@ const ogImageURL = ogImage || post?.FeaturedImage?.Url || coverImageURL;
   }
   blockquote {
     border-left: 4px solid var(--accent);
-    padding: 0 0 0 20px;
-    margin: 0px;
-    font-size: 1.333em;
+    padding: 1rem 0 1rem 20px;  /* 上下のパディングを追加 */
+    margin: 1.5rem 0;  /* 上下のマージンを追加 */
+    font-size: 1.1em;  /* 少し小さめに */
+    background: rgba(var(--gray-light), 0.5);  /* 背景色を追加 */
+    border-radius: 4px;
   }
   hr {
     border: none;
@@ -176,7 +178,7 @@ const ogImageURL = ogImage || post?.FeaturedImage?.Url || coverImageURL;
   }
   @media (max-width: 720px) {
     body {
-      font-size: 14px;
+      font-size: 15px;  /* モバイルでも読みやすいサイズに */
     }
     main {
       padding: 1em;

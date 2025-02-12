@@ -27,8 +27,24 @@ const { richText } = Astro.props
 
 <style>
   code {
-    color: #eb5757; /* コードテキストの色 */
-    padding: 0.25rem; /* コードテキストのpadding */
+    color: var(--color-primary);
+    background: rgba(var(--accent), 0.1);
+    padding: 0.2rem 0.4rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.9em;
+    font-family: var(--font-family-code);
+    transition: all 0.3s ease;
+  }
+
+  code:hover {
+    background: rgba(var(--accent), 0.15);
+  }
+
+  @media (max-width: 640px) {
+    code {
+      font-size: 0.85em;
+      padding: 0.15rem 0.3rem;
+    }
   }
 </style>
 

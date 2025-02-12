@@ -40,5 +40,67 @@ const listTypes = ['i', '1', 'a']
 <style>
   ol {
     font-size: 1rem;
+    line-height: 1.8;
+    margin: 1rem 0;
+    padding-left: 2rem;
+    counter-reset: item;
+  }
+
+  li {
+    position: relative;
+    margin: 0.5rem 0;
+    padding-left: 0.5rem;
+  }
+
+  /* カラーバリエーション */
+  li.gray {
+    color: #9e9e9e;
+  }
+  li.brown {
+    color: #795548;
+  }
+  li.orange {
+    color: #ff9800;
+  }
+  li.yellow {
+    color: #ffc107;
+  }
+  li.green {
+    color: var(--color-primary);
+  }
+  li.blue {
+    color: #2196f3;
+  }
+  li.purple {
+    color: #9c27b0;
+  }
+  li.pink {
+    color: #e91e63;
+  }
+  li.red {
+    color: #f44336;
+  }
+
+  /* リストスタイルのカスタマイズ */
+  ol[type="1"] {
+    list-style-type: decimal;
+  }
+
+  ol[type="a"] {
+    list-style-type: lower-alpha;
+  }
+
+  ol[type="i"] {
+    list-style-type: lower-roman;
+  }
+
+  @media (max-width: 640px) {
+    ol {
+      padding-left: 1.5rem;
+    }
+    
+    li {
+      padding-left: 0.3rem;
+    }
   }
 </style>

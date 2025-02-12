@@ -1,9 +1,10 @@
 ---
 import Layout from '../layouts/Layout.astro'
 import styles from '../styles/page.module.css'
+import OptimizedImage from '../components/OptimizedImage.astro'
 
 const title = '運営者'
-const description = 'ブログ運営者の紹介ページです。'
+const description = '看護師として3回の転職経験を持つ現役ナースが運営する、若手看護師向けキャリアブログの運営者紹介ページです。'
 const ogImage = new URL('/ogp.png', Astro.site).toString()
 ---
 
@@ -14,34 +15,40 @@ const ogImage = new URL('/ogp.png', Astro.site).toString()
     <section class={styles.section}>
       <div class="profile">
         <div class="profile-header">
-          <img src="/auther.png" alt="プロフィール画像" class="profile-image" />
+          <OptimizedImage
+            src="/auther.png"
+            alt="カンナのプロフィール画像"
+            width={120}
+            height={120}
+            class="profile-image"
+          />
           <div class="profile-info">
-            <h2>テトラ</h2>
-            <p class="profile-title">フルスタックエンジニア5年生</p>
+            <h2>カンナ</h2>
+            <p class="profile-title">現役看護師（経験10年）</p>
           </div>
         </div>
         <div class="profile-description">
           <p>
-            大学卒業後、5年間システムエンジニアとして勤務。<br>
-            業務でAI技術に触れる機会があり、その可能性に魅了され、独学で機械学習を習得。<br>
-            現在はAI関連プロジェクトに参画し、画像認識や自然言語処理などの開発を担当。<br>
-            過去には、社内向けAIチャットボットの開発プロジェクトを主導し、業務効率化に貢献。
+            看護師として10年間、様々な医療現場で勤務。<br>
+            3回の転職を経験し、それぞれの経験から多くを学びました。<br>
+            現在は総合病院で勤務しながら、若手看護師のキャリア支援に携わっています。
           </p>
           <p>
-            主な使用開発言語：
+            経験した診療科・職場：
           </p>
           <ul>
-            <li>フロントエンド開発（React, TailwindCSS, Next.js, TypeScript）</li>
-            <li>バックエンド開発（Next.js, JavaScript, PHP, Python）</li>
-            <li>自動システム（GAS, C++, Golang）</li>
+            <li>大学病院（救急外来）</li>
+            <li>クリニック（内科・外科）</li>
+            <li>総合病院（内科病棟）</li>
           </ul>
           <p>
-            直近の開発経験：
+            得意分野：
           </p>
           <ul>
-            <li>自動化システム(C++, Python, GAS)</li>
-            <li>スクレイピング(GAS, Python, Golang）</li>
-            <li>AI駆動システム（GAS, Python, TypeScript）</li>
+            <li>新人看護師の教育・メンタリング</li>
+            <li>看護師のキャリアプランニング</li>
+            <li>職場環境の改善提案</li>
+            <li>ワークライフバランスの確立</li>
           </ul>
         </div>
       </div>
@@ -54,27 +61,30 @@ const ogImage = new URL('/ogp.png', Astro.site).toString()
           このブログでは、主に以下のテーマについて発信しています：
         </p>
         <ul>
-          <li>Web開発の技術情報と実践的なチュートリアル</li>
-          <li>プログラミング学習のためのヒントとアドバイス</li>
-          <li>エンジニアのキャリア形成に関する考察</li>
-          <li>最新のテクノロジートレンド解説</li>
+          <li>1-3年目の看護師が直面する悩みと解決策</li>
+          <li>転職を考える際のポイントと準備</li>
+          <li>メンタルヘルスケアの実践的アドバイス</li>
+          <li>キャリアアップのためのスキル開発</li>
         </ul>
         <p>
-          と、気取ったことを書いてみましたが、失敗も成功も実体験ベースで書き綴っています。
-          同じようにつまづいている方の一助になれば幸いです。
-          記事の投稿時期によっては、実状と異なることもあることをあらかじめご了承ください。
-
+          私自身の経験をもとに、実践的なアドバイスを心がけています。
+          同じような悩みを抱える若手看護師の方々に、少しでもお役に立てる情報を提供できれば幸いです。
+          医療現場は日々変化していますので、状況に応じて柔軟に対応することも大切です。
         </p>
       </div>
     </section>
 
     <section class={styles.section}>
-      <h2>連絡先・SNS</h2>
+      <h2>個別相談について</h2>
       <div class="contact-info">
         <p>
-          ブログの内容に関するご質問やお仕事のご依頼は、
+          キャリアに関する個別相談を受け付けています。
           <a href="/contact" class="contact-link">お問い合わせフォーム</a>
-          からお気軽にご連絡ください。
+          からご連絡ください。
+        </p>
+        <p class="consultation-note">
+          ※医療・健康相談はお受けできません。<br>
+          ※返信は原則として平日のみとさせていただきます。
         </p>
       </div>
     </section>
@@ -173,28 +183,11 @@ const ogImage = new URL('/ogp.png', Astro.site).toString()
     text-decoration: underline;
   }
 
-  .social-links {
-    display: flex;
-    gap: 1rem;
+  .consultation-note {
+    font-size: 0.9rem;
+    color: var(--color-text-light);
     margin-top: 1rem;
-  }
-
-  .social-link {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.5rem 1rem;
-    background: var(--color-bg);
-    border: 2px solid var(--color-border);
-    border-radius: var(--radius-md);
-    color: var(--color-text);
-    text-decoration: none;
-    font-weight: 500;
-    transition: all 0.2s ease;
-  }
-
-  .social-link:hover {
-    border-color: var(--color-primary);
-    color: var(--color-primary);
+    line-height: 1.6;
   }
 
   @media (max-width: 640px) {
@@ -215,14 +208,6 @@ const ogImage = new URL('/ogp.png', Astro.site).toString()
 
     .contact-info {
       padding: 1rem;
-    }
-
-    .social-links {
-      flex-direction: column;
-    }
-
-    .social-link {
-      text-align: center;
     }
   }
 </style> 

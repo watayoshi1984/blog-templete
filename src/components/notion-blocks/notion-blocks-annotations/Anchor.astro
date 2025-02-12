@@ -27,7 +27,21 @@ const { richText } = Astro.props
 
 <style>
   a {
-    text-decoration: underline;
+    color: var(--color-primary);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: all 0.3s ease;
+  }
+
+  a:hover {
+    color: var(--color-primary-dark);
+    border-bottom-color: var(--color-primary-dark);
+  }
+
+  @media (max-width: 640px) {
+    a {
+      border-bottom-width: 0.5px;
+    }
   }
 </style>
 

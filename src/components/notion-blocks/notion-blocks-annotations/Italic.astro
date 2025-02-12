@@ -25,6 +25,20 @@ const { richText } = Astro.props
   )
 }
 
+<style>
+  i {
+    font-style: italic;
+    color: var(--color-text);
+    opacity: 0.9;
+  }
+
+  @media (max-width: 640px) {
+    i {
+      opacity: 0.85;
+    }
+  }
+</style>
+
 <!--
   改善点:
     - Propsのインターフェース定義をより具体的にする (例: RichText型の中身を定義)

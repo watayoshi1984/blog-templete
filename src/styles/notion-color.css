@@ -1,104 +1,108 @@
-.gray,
-.gray:hover {
+/* テキストカラー（インライン注釈用） */
+.notion-text.gray,
+.notion-text.gray:hover {
   color: rgba(120, 119, 116, 1);
 }
-.brown,
-.brown:hover {
+.notion-text.brown,
+.notion-text.brown:hover {
   color: rgba(159, 107, 83, 1);
 }
-.orange,
-.orange:hover {
+.notion-text.orange,
+.notion-text.orange:hover {
   color: rgba(217, 115, 13, 1);
 }
-.yellow,
-.yellow:hover {
+.notion-text.yellow,
+.notion-text.yellow:hover {
   color: rgba(203, 145, 47, 1);
 }
-.green,
-.green:hover {
+.notion-text.green,
+.notion-text.green:hover {
   color: rgba(68, 131, 97, 1);
 }
-.blue,
-.blue:hover {
+.notion-text.blue,
+.notion-text.blue:hover {
   color: rgba(51, 126, 169, 1);
 }
-.purple,
-.purple:hover {
+.notion-text.purple,
+.notion-text.purple:hover {
   color: rgba(144, 101, 176, 1);
 }
-.pink,
-.pink:hover {
+.notion-text.pink,
+.notion-text.pink:hover {
   color: rgba(193, 76, 138, 1);
 }
-.red,
-.red:hover {
+.notion-text.red,
+.notion-text.red:hover {
   color: rgba(212, 76, 71, 1);
 }
-.gray-background {
-  background: rgba(241, 241, 239, 1) !important;
+
+/* 背景色（ブロック用） */
+.notion-background.gray-background {
+  background: rgba(241, 241, 239, 1);
 }
-.brown-background {
-  background: rgba(244, 238, 238, 1) !important;
+.notion-background.brown-background {
+  background: rgba(244, 238, 238, 1);
 }
-.orange-background {
-  background: rgba(251, 236, 221, 1) !important;
+.notion-background.orange-background {
+  background: rgba(251, 236, 221, 1);
 }
-.yellow-background {
-  background: rgba(251, 243, 219, 1) !important;
+.notion-background.yellow-background {
+  background: rgba(251, 243, 219, 1);
 }
-.green-background {
-  background: rgba(237, 243, 236, 1) !important;
+.notion-background.green-background {
+  background: rgba(237, 243, 236, 1);
 }
-.blue-background {
-  background: rgba(231, 243, 248, 1) !important;
+.notion-background.blue-background {
+  background: rgba(231, 243, 248, 1);
 }
-.purple-background {
-  background: rgba(244, 240, 247, 0.8) !important;
+.notion-background.purple-background {
+  background: rgba(244, 240, 247, 0.8);
 }
-.pink-background {
-  background: rgba(249, 238, 243, 0.8) !important;
+.notion-background.pink-background {
+  background: rgba(249, 238, 243, 0.8);
 }
-.red-background {
-  background: rgba(253, 235, 236, 1) !important;
+.notion-background.red-background {
+  background: rgba(253, 235, 236, 1);
 }
 
-.tag.light-gray {
+/* タグ用のスタイル */
+.notion-tag.light-gray {
   color: rgb(28, 56, 41);
-  background: rgba(227, 226, 224, 0.5) !important;
+  background: rgba(227, 226, 224, 0.5);
 }
-.tag.gray {
+.notion-tag.gray {
   color: rgb(28, 56, 41);
-  background: rgb(227, 226, 224) !important;
+  background: rgb(227, 226, 224);
 }
-.tag.brown {
+.notion-tag.brown {
   color: rgb(28, 56, 41);
-  background: rgb(238, 224, 218) !important;
+  background: rgb(238, 224, 218);
 }
-.tag.orange {
+.notion-tag.orange {
   color: rgb(28, 56, 41);
-  background: rgb(250, 222, 201) !important;
+  background: rgb(250, 222, 201);
 }
-.tag.yellow {
+.notion-tag.yellow {
   color: rgb(28, 56, 41);
-  background: rgb(253, 236, 200) !important;
+  background: rgb(253, 236, 200);
 }
-.tag.green {
+.notion-tag.green {
   color: rgb(28, 56, 41);
-  background: rgb(219, 237, 219) !important;
+  background: rgb(219, 237, 219);
 }
-.tag.blue {
+.notion-tag.blue {
   color: rgb(28, 56, 41);
-  background: rgb(211, 229, 239) !important;
+  background: rgb(211, 229, 239);
 }
-.tag.purple {
+.notion-tag.purple {
   color: rgb(28, 56, 41);
-  background: rgb(232, 222, 238) !important;
+  background: rgb(232, 222, 238);
 }
-.tag.pink {
+.notion-tag.pink {
   color: rgb(28, 56, 41);
-  background: rgb(245, 224, 233) !important;
+  background: rgb(245, 224, 233);
 }
-.tag.red {
+.notion-tag.red {
   color: rgb(28, 56, 41);
-  background: rgb(255, 226, 221) !important;
+  background: rgb(255, 226, 221);
 }

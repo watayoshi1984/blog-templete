@@ -1,14 +1,10 @@
 ---
 import Layout from '../layouts/Layout.astro'
 import styles from '../styles/page.module.css'
-import ContactForm from '../components/ContactForm.astro'
 
 const title = 'お問い合わせ'
-const description = '当サイトへのお問い合わせはこちらのフォームからお願いいたします。'
+const description = '看護師のキャリア相談、ブログに関するお問い合わせはこちらのフォームからお願いいたします。'
 const ogImage = new URL('/ogp.png', Astro.site).toString()
-
-// Turnstileのサイトキーを環境変数から取得
-const TURNSTILE_SITE_KEY = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY
 ---
 
 <Layout title={title} description={description} path="/contact" ogImage={ogImage}>
@@ -16,88 +12,126 @@ const TURNSTILE_SITE_KEY = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY
     <h1>お問い合わせ</h1>
 
     <section class={styles.section}>
-      <div class="intro">
-        <h2>お問い合わせについて</h2>
-        <ul class="notice-list">
-          <li>通常2-3営業日以内にご返信いたします</li>
-          <li>土日祝日、年末年始は返信が遅れる場合があります</li>
+      <div class="contact-intro">
+        <p>
+          以下のような内容についてご相談を承っています：
+        </p>
+        <ul>
+          <li>看護師としてのキャリア相談</li>
+          <li>転職に関する具体的なアドバイス</li>
+          <li>職場での人間関係の悩み</li>
+          <li>ブログの内容に関するご質問</li>
         </ul>
+        <p class="contact-note">
+          ※医療・健康相談はお受けできません。<br>
+          ※返信は原則として平日のみとさせていただきます。<br>
+          ※内容によってはお返事できない場合もございます。<br>
+          ※個人情報は厳重に管理し、相談対応以外の目的では使用いたしません。
+        </p>
       </div>
 
-      <ContactForm />
+      <div class="form-container">
+        <div class="form-wrapper">
+          <iframe
+            src="https://docs.google.com/forms/d/e/1FAIpQLSe61EnvwOVmPfU1FF5AsPjGVpOLuKWmSydhGfoY_PZq41-XLw/viewform?embedded=true"
+            title="看護師キャリア相談フォーム"
+            loading="lazy"
+          >
+            読み込んでいます...
+          </iframe>
+        </div>
+      </div>
     </section>
   </div>
 </Layout>
 
-<!-- Turnstileスクリプト -->
-<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-
-<script>
-  const form = document.getElementById('contactForm') as HTMLFormElement;
-  const toast = document.getElementById('toast');
-
-  if (form) {
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      
-      try {
-        const formData = new FormData(form);
-        const turnstileResponse = formData.get('cf-turnstile-response');
-        
-        if (!turnstileResponse) {
-          throw new Error('認証を完了してください');
-        }
-
-        const response = await fetch('/api/contact', {
-          method: 'POST',
-          body: formData
-        });
-
-        if (!response.ok) {
-          throw new Error('送信に失敗しました');
-        }
-
-        // フォームをリセット
-        form.reset();
-        // Turnstileをリセット
-        turnstile.reset();
-
-        // 完了メッセージを表示
-        if (toast) {
-          toast.classList.add('show');
-          setTimeout(() => {
-            toast.classList.remove('show');
-          }, 3000);
-        }
-      } catch (error) {
-        console.error('Error:', error);
-        if (toast) {
-          toast.textContent = error.message || 'エラーが発生しました。時間をおいて再度お試しください。';
-          toast.classList.add('show', 'error');
-          setTimeout(() => {
-            toast.classList.remove('show', 'error');
-          }, 3000);
-        }
-      }
-    });
-  }
-</script>
-
 <style>
-  .intro {
+  .contact-intro {
+    background: var(--color-bg-secondary);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
     margin-bottom: 2rem;
   }
 
-  .notice-list {
-    list-style: disc;
-    margin-left: 1.5rem;
+  .contact-intro ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 1rem 0;
+  }
+
+  .contact-intro li {
+    position: relative;
+    padding-left: 1.2rem;
+    margin: 0.5rem 0;
+    line-height: 1.6;
+  }
+
+  .contact-intro li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: var(--color-primary);
+  }
+
+  .contact-note {
+    font-size: 0.9rem;
     color: var(--color-text-light);
+    margin-top: 1.5rem;
+    line-height: 1.6;
+    padding: 1rem;
+    background: var(--color-bg);
+    border-radius: var(--radius-md);
+  }
+
+  .form-container {
+    background: var(--color-bg);
+    border-radius: var(--radius-lg);
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .form-wrapper {
+    position: relative;
+    width: 100%;
+    padding-top: 150%; /* アスペクト比 2:3 */
+    height: 0;
+    overflow: hidden;
+  }
+
+  iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: var(--radius-md);
+    background: var(--color-bg);
+  }
+
+  @media (min-width: 641px) {
+    .form-wrapper {
+      padding-top: 120%; /* デスクトップではやや短めに */
+    }
   }
 
   @media (max-width: 640px) {
-    .intro {
+    .contact-intro {
       padding: 1rem;
-      margin-bottom: 1.5rem;
+    }
+
+    .form-container {
+      padding: 0.5rem;
+    }
+
+    .form-wrapper {
+      padding-top: 180%; /* モバイルでは高さを増やす */
+    }
+  }
+
+  @media (max-width: 480px) {
+    .form-wrapper {
+      padding-top: 200%; /* 小さい画面ではさらに高さを増やす */
     }
   }
 </style> 

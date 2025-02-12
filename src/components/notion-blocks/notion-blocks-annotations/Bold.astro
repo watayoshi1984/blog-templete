@@ -25,6 +25,19 @@ const { richText } = Astro.props
   )
 }
 
+<style>
+  b {
+    font-weight: 700;
+    color: var(--color-text-heading);
+  }
+
+  @media (max-width: 640px) {
+    b {
+      font-weight: 600;
+    }
+  }
+</style>
+
 <!--
   改善点:
     - Propsのインターフェース定義をより具体的にする (例: RichText型の中身を定義)

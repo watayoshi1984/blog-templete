@@ -78,53 +78,92 @@ const grammer =
   .code {
     display: block;
     width: 100%;
-    margin-bottom: 0.6rem;
+    margin: 1.5rem 0;
   }
+  
   .code > div {
-    background: rgb(247, 246, 243);
-    border-radius: var(--radius);
+    background: var(--color-bg-secondary);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--color-border);
   }
+  
   .code > div div {
     display: flex;
     justify-content: flex-end;
+    padding: 0.5rem;
+    border-bottom: 1px solid var(--color-border);
   }
+  
   .code button.copy {
     display: block;
-    width: 4rem;
-    border: 0;
-    border-radius: var(--radius);
-    background-color: rgba(227, 226, 224, 0.5);
-    color: var(--fg);
-    line-height: 1.2rem;
+    width: 5rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    line-height: 1.8rem;
+    font-size: 0.9rem;
     cursor: pointer;
+    transition: all 0.3s ease;
   }
+
+  .code button.copy:hover {
+    background-color: var(--color-primary);
+    color: white;
+    border-color: var(--color-primary);
+  }
+  
   .code pre {
     display: block;
     overflow: auto;
-    padding: 0.8rem 2rem 2rem;
-    font-size: 0.9rem;
-    line-height: 1.2rem;
+    padding: 1.5rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
     white-space: pre;
     width: 100px;
     min-width: 100%;
     overflow-x: auto;
+    
     &::-webkit-scrollbar {
-      height: 10px;
+      height: 8px;
     }
+    
     &::-webkit-scrollbar-thumb {
-      background: rgb(211, 209, 203);
+      background: var(--color-border);
+      border-radius: 4px;
     }
+    
     &::-webkit-scrollbar-track {
-      background: rgb(237, 236, 233);
+      background: var(--color-bg-secondary);
     }
   }
+  
   .code pre.mermaid {
     padding: 2rem;
   }
+  
   .code pre code {
-    color: var(--fg);
+    color: var(--color-text);
     padding: 0;
-    background: rgb(247, 246, 243) !important;
+    background: transparent !important;
     border-radius: 0;
+  }
+
+  @media (max-width: 640px) {
+    .code {
+      margin: 1rem 0;
+    }
+    
+    .code pre {
+      padding: 1rem;
+      font-size: 0.9rem;
+    }
+    
+    .code button.copy {
+      width: 4.5rem;
+      line-height: 1.6rem;
+      font-size: 0.85rem;
+    }
   }
 </style>

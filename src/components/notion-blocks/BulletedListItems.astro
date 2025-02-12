@@ -36,5 +36,65 @@ const { block, headings } = Astro.props
 <style>
   ul {
     font-size: 1rem;
+    line-height: 1.8;
+    margin: 1rem 0;
+    padding-left: 1.5rem;
+    list-style: none;
+  }
+
+  li {
+    position: relative;
+    margin: 0.5rem 0;
+    padding-left: 1.5rem;
+  }
+
+  li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.7em;
+    width: 6px;
+    height: 6px;
+    background-color: var(--color-primary);
+    border-radius: 50%;
+  }
+
+  /* カラーバリエーション */
+  li.gray::before {
+    background-color: #9e9e9e;
+  }
+  li.brown::before {
+    background-color: #795548;
+  }
+  li.orange::before {
+    background-color: #ff9800;
+  }
+  li.yellow::before {
+    background-color: #ffc107;
+  }
+  li.green::before {
+    background-color: var(--color-primary);
+  }
+  li.blue::before {
+    background-color: #2196f3;
+  }
+  li.purple::before {
+    background-color: #9c27b0;
+  }
+  li.pink::before {
+    background-color: #e91e63;
+  }
+  li.red::before {
+    background-color: #f44336;
+  }
+
+  @media (max-width: 640px) {
+    ul {
+      padding-left: 1rem;
+    }
+    
+    li {
+      padding-left: 1.2rem;
+    }
   }
 </style>

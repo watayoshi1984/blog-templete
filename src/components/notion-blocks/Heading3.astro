@@ -45,38 +45,70 @@ const id = buildHeadingId(block.Heading3)
 
 <style>
   h5 {
-    margin: 0.9em 0 0.3em;
-    color: var(--fg);
-    font-size: 1.25rem;
+    margin: 1.2em 0 0.4em;
+    color: var(--color-text-heading);
+    font-size: 1.3rem;
+    font-weight: 600;
+    line-height: 1.4;
+    position: relative;
+    padding-left: 1.5rem;
   }
+
+  h5::before {
+    content: '●';
+    position: absolute;
+    left: 0;
+    top: 0.1em;
+    color: var(--color-primary);
+    font-size: 0.8em;
+  }
+
   @media (max-width: 640px) {
     h5 {
       font-size: 1.1rem;
+      margin: 1em 0 0.3em;
     }
   }
 
   .toggle {
-    margin: 1.2rem 0 0;
+    margin: 1.8rem 0 0;
   }
+
   @media (max-width: 640px) {
     .toggle {
-      margin: 1.1rem 0 0;
+      margin: 1.3rem 0 0;
     }
   }
 
   .toggle > summary {
     cursor: pointer;
+    padding: 0.5rem 0;
   }
 
   .toggle > summary > a {
     display: inline;
+    text-decoration: none;
+    color: var(--color-text-heading);
+  }
+
+  .toggle > summary > a:hover {
+    color: var(--color-primary);
   }
 
   .toggle > summary > a > h5 {
     display: inline;
+    padding-left: 0;
+  }
+
+  .toggle > summary > a > h5::before {
+    display: none;
   }
 
   .toggle > div {
-    margin-left: 1em;
+    margin: 1rem 0 1rem 1.5rem;
+    padding: 1rem;
+    background: rgba(var(--accent), 0.05);
+    border-radius: var(--radius-md);
+    border-left: 4px solid var(--color-primary);
   }
 </style>

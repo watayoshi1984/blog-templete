@@ -41,27 +41,124 @@ const { block, headings } = Astro.props
 <style>
   .callout {
     display: flex;
-    margin: 0.4rem auto;
-    padding: 16px 12px;
+    margin: 0.8rem auto;
+    padding: 1.25rem 1rem;
     width: 100%;
     font-size: 1rem;
     font-weight: 400;
-    line-height: 1.6rem;
-    border-radius: 3px;
+    line-height: 1.8;
+    border-radius: var(--radius-md);
     border-width: 1px;
     border-style: solid;
-    border-color: transparent;
-    background: rgba(235, 236, 237, 0.6);
+    border-color: var(--color-primary);
+    background: var(--color-bg-secondary);
+    box-shadow: var(--shadow-sm);
   }
   .callout > div {
     margin: 0;
-    line-height: 1.5rem;
+    line-height: 1.8;
   }
   .callout > div.icon {
-    margin-right: 0.7rem;
+    margin-right: 1rem;
+    font-size: 1.2rem;
   }
   .callout > div.icon > img {
-    width: 1.2rem;
-    height: 1.2rem;
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  /* カラーバリエーション */
+  .callout.gray {
+    border-color: #9e9e9e;
+  }
+  .callout.brown {
+    border-color: #795548;
+  }
+  .callout.orange {
+    border-color: #ff9800;
+  }
+  .callout.yellow {
+    border-color: #ffc107;
+  }
+  .callout.green {
+    border-color: var(--color-primary);
+  }
+  .callout.blue {
+    border-color: #2196f3;
+  }
+  .callout.purple {
+    border-color: #9c27b0;
+  }
+  .callout.pink {
+    border-color: #e91e63;
+  }
+  .callout.red {
+    border-color: #f44336;
+  }
+
+  /* ライトモード時の背景色 */
+  :global(:root:not(.dark)) .callout {
+    background: rgba(var(--accent), 0.05);
+  }
+
+  :global(:root:not(.dark)) .callout.gray {
+    background: rgba(158, 158, 158, 0.05);
+  }
+  :global(:root:not(.dark)) .callout.brown {
+    background: rgba(121, 85, 72, 0.05);
+  }
+  :global(:root:not(.dark)) .callout.orange {
+    background: rgba(255, 152, 0, 0.05);
+  }
+  :global(:root:not(.dark)) .callout.yellow {
+    background: rgba(255, 193, 7, 0.05);
+  }
+  :global(:root:not(.dark)) .callout.green {
+    background: rgba(var(--accent), 0.05);
+  }
+  :global(:root:not(.dark)) .callout.blue {
+    background: rgba(33, 150, 243, 0.05);
+  }
+  :global(:root:not(.dark)) .callout.purple {
+    background: rgba(156, 39, 176, 0.05);
+  }
+  :global(:root:not(.dark)) .callout.pink {
+    background: rgba(233, 30, 99, 0.05);
+  }
+  :global(:root:not(.dark)) .callout.red {
+    background: rgba(244, 67, 54, 0.05);
+  }
+
+  /* ダークモード時の背景色 */
+  :global(.dark) .callout {
+    background: rgba(76, 175, 80, 0.15);
+  }
+
+  :global(.dark) .callout.gray {
+    background: rgba(158, 158, 158, 0.15);
+  }
+  :global(.dark) .callout.brown {
+    background: rgba(121, 85, 72, 0.15);
+  }
+  :global(.dark) .callout.orange {
+    background: rgba(255, 152, 0, 0.15);
+  }
+  :global(.dark) .callout.yellow {
+    background: rgba(255, 193, 7, 0.15);
+  }
+  :global(.dark) .callout.green {
+    background: rgba(76, 175, 80, 0.15);
+  }
+  :global(.dark) .callout.blue {
+    background: rgba(33, 150, 243, 0.15);
+  }
+  :global(.dark) .callout.purple {
+    background: rgba(156, 39, 176, 0.15);
+  }
+  :global(.dark) .callout.pink {
+    background: rgba(233, 30, 99, 0.15);
+  }
+  :global(.dark) .callout.red {
+    background: rgba(244, 67, 54, 0.15);
   }
 </style>

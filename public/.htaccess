@@ -1,6 +1,7 @@
 # 基本設定
-Options +FollowSymLinks -Indexes
-DirectoryIndex index.html
+Options All -Indexes +FollowSymLinks -MultiViews
+DirectoryIndex index.html index.htm
+ServerSignature Off
 
 # PHPの設定
 AddHandler application/x-httpd-php .php
@@ -8,30 +9,130 @@ AddType application/x-httpd-php .php
 
 # 文字エンコーディング
 AddDefaultCharset UTF-8
+AddCharset UTF-8 .html .css .js .json .xml
 
-# キャッシュ設定
-<IfModule mod_expires.c>
-    ExpiresActive On
-    ExpiresByType text/css "access plus 1 year"
-    ExpiresByType text/javascript "access plus 1 year"
-    ExpiresByType application/javascript "access plus 1 year"
-    ExpiresByType image/jpeg "access plus 1 year"
-    ExpiresByType image/png "access plus 1 year"
-    ExpiresByType image/gif "access plus 1 year"
-    ExpiresByType image/svg+xml "access plus 1 year"
-    ExpiresByType image/webp "access plus 1 year"
-    ExpiresByType font/woff "access plus 1 year"
-    ExpiresByType font/woff2 "access plus 1 year"
+# MIMEタイプの設定
+AddType image/webp .webp
+AddType image/avif .avif
+AddType font/woff2 .woff2
+AddType font/woff .woff
+AddType application/javascript .js .mjs
+AddType text/css .css
+AddType application/json .json
+AddType text/xml .xml
+AddType application/x-font-ttf .ttf
+AddType application/x-font-opentype .otf
+AddType application/font-sfnt .ttf .otf
+AddType image/svg+xml .svg
+AddType application/manifest+json .webmanifest
+
+# モジュール設定
+<IfModule mod_setenvif.c>
+    SetEnvIf Request_URI "\.(jpe?g|gif|png|webp|avif)$" no-gzip
 </IfModule>
 
 # Gzip圧縮
 <IfModule mod_deflate.c>
-    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript
-    AddOutputFilterByType DEFLATE application/xml application/xhtml+xml application/rss+xml
-    AddOutputFilterByType DEFLATE application/javascript application/x-javascript
-    AddOutputFilterByType DEFLATE application/x-httpd-php
-    AddOutputFilterByType DEFLATE image/svg+xml
-    AddOutputFilterByType DEFLATE font/ttf font/otf font/woff font/woff2
+    <IfModule mod_filter.c>
+        AddOutputFilterByType DEFLATE "application/atom+xml" \
+                                    "application/javascript" \
+                                    "application/json" \
+                                    "application/ld+json" \
+                                    "application/manifest+json" \
+                                    "application/rdf+xml" \
+                                    "application/rss+xml" \
+                                    "application/schema+json" \
+                                    "application/vnd.geo+json" \
+                                    "application/x-javascript" \
+                                    "application/x-web-app-manifest+json" \
+                                    "application/xml" \
+                                    "application/x-font-ttf" \
+                                    "application/x-font-opentype" \
+                                    "application/vnd.ms-fontobject" \
+                                    "font/eot" \
+                                    "font/opentype" \
+                                    "font/otf" \
+                                    "image/svg+xml" \
+                                    "text/cache-manifest" \
+                                    "text/calendar" \
+                                    "text/css" \
+                                    "text/html" \
+                                    "text/javascript" \
+                                    "text/plain" \
+                                    "text/markdown" \
+                                    "text/vcard" \
+                                    "text/vtt" \
+                                    "text/x-component" \
+                                    "text/x-cross-domain-policy" \
+                                    "text/xml"
+    </IfModule>
+    
+    # 画像は圧縮しない
+    SetEnvIfNoCase Request_URI "\.(gif|jpe?g|png|webp|avif)$" no-gzip
+</IfModule>
+
+# キャッシュ制御
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresDefault "access plus 1 hour"
+    
+    # HTML - キャッシュなし
+    ExpiresByType text/html "access plus 0 seconds"
+    
+    # Assets
+    ExpiresByType text/css "access plus 1 year"
+    ExpiresByType text/javascript "access plus 1 year"
+    ExpiresByType application/javascript "access plus 1 year"
+    ExpiresByType application/x-javascript "access plus 1 year"
+    
+    # Images
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType image/avif "access plus 1 year"
+    ExpiresByType image/x-icon "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    
+    # Fonts
+    ExpiresByType font/woff "access plus 1 year"
+    ExpiresByType font/woff2 "access plus 1 year"
+    ExpiresByType application/x-font-woff "access plus 1 year"
+    ExpiresByType application/x-font-ttf "access plus 1 year"
+    ExpiresByType application/x-font-opentype "access plus 1 year"
+    ExpiresByType application/font-sfnt "access plus 1 year"
+    ExpiresByType application/vnd.ms-fontobject "access plus 1 year"
+    
+    # Data
+    ExpiresByType application/json "access plus 0 seconds"
+    ExpiresByType application/xml "access plus 0 seconds"
+    ExpiresByType application/manifest+json "access plus 0 seconds"
+    ExpiresByType text/xml "access plus 0 seconds"
+</IfModule>
+
+# キャッシュヘッダー
+<IfModule mod_headers.c>
+    # HTML - キャッシュなし
+    <FilesMatch "\.(html|htm)$">
+        Header set Cache-Control "no-cache, no-store, must-revalidate"
+        Header set Pragma "no-cache"
+        Header set Expires 0
+    </FilesMatch>
+    
+    # 静的アセット - 長期キャッシュ
+    <FilesMatch "\.(css|js|mjs|jpg|jpeg|png|gif|webp|avif|ico|woff2?|ttf|otf|eot|svg)$">
+        Header set Cache-Control "public, max-age=31536000, immutable"
+        Header unset ETag
+        Header unset Last-Modified
+    </FilesMatch>
+    
+    # Keep-Alive と 圧縮の有効化
+    Header set Connection keep-alive
+    Header append Vary Accept-Encoding
+    Header merge Vary Accept
+    
+    # プリフェッチの有効化
+    Header set X-DNS-Prefetch-Control "on"
 </IfModule>
 
 # セキュリティヘッダー
@@ -39,25 +140,58 @@ AddDefaultCharset UTF-8
     Header set X-Content-Type-Options "nosniff"
     Header set X-Frame-Options "SAMEORIGIN"
     Header set X-XSS-Protection "1; mode=block"
-    Header set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+    Header set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
     Header set Referrer-Policy "strict-origin-when-cross-origin"
-    Header set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+    Header set Permissions-Policy "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=(), interest-cohort=()"
+    Header set Cross-Origin-Embedder-Policy "require-corp"
+    Header set Cross-Origin-Opener-Policy "same-origin"
+    Header set Cross-Origin-Resource-Policy "same-origin"
+    
+    # CORS設定
+    <FilesMatch "\.(css|js|mjs|jpg|jpeg|png|gif|webp|avif|woff2?|ttf|otf|eot|svg)$">
+        Header set Access-Control-Allow-Origin "*"
+        Header set Access-Control-Allow-Methods "GET, OPTIONS"
+        Header set Access-Control-Allow-Headers "Origin, X-Requested-With, Content-Type, Accept, Range"
+        Header set Access-Control-Max-Age "86400"
+    </FilesMatch>
 </IfModule>
 
-# HTTPSリダイレクト
-<IfModule mod_rewrite.c>
-    RewriteEngine On
-    RewriteCond %{HTTPS} off
-    RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
-</IfModule>
-
-# URLリライトルール
+# Enable rewrite engine
 RewriteEngine On
-RewriteBase /
-RewriteRule ^index\.html$ - [L]
+
+# Force HTTPS
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Remove trailing slashes
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)/$ /$1 [L,R=301]
+
+# Handle root directory access
+RewriteRule ^$ /index.html [L]
+
+# Handle direct access to HTML files
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule . /index.html [L]
+RewriteCond %{REQUEST_FILENAME}.html -f
+RewriteRule ^(.*)$ $1.html [L]
+
+# Handle directory index files
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteCond %{REQUEST_FILENAME}/index.html -f
+RewriteRule ^(.*)$ $1/index.html [L]
+
+# Fallback for non-existent files/directories
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ /index.html [L]
+
+# Error documents
+ErrorDocument 404 /index.html
+ErrorDocument 500 /index.html
+ErrorDocument 502 /index.html
+ErrorDocument 503 /index.html
+ErrorDocument 504 /index.html
 
 # ファイルアクセス制御
 <Files ~ "^\.">
@@ -65,7 +199,11 @@ RewriteRule . /index.html [L]
     Deny from all
 </Files>
 
-# エラーページ設定
-ErrorDocument 403 /index.html
-ErrorDocument 404 /index.html
-ErrorDocument 500 /index.html 
+<FilesMatch "^(\.htaccess|\.htpasswd|\.git|\.env|\.env\.|composer\.json|package\.json|package-lock\.json|yarn\.lock|README\.md|LICENSE)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# パフォーマンス設定
+FileETag None
+ServerSignature Off 

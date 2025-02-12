@@ -22,11 +22,11 @@ const { title = SITE_TITLE, iconPath } = Astro.props;
           height={40}
           class="icon"
         />
-        <a href="/">エンジニアの戯言</a>
+        <a href="/">NEXT Nurse</a>
       </div>
     </div>
     <div class="controls">
-      <!-- ThemeToggleを削除 -->
+      <slot />
     </div>
   </div>
 </header>
@@ -82,42 +82,21 @@ const { title = SITE_TITLE, iconPath } = Astro.props;
     object-fit: cover;
   }
 
-  .internal-links {
+  .nav-links {
     display: flex;
-    gap: 1em;
-  }
-
-  .internal-links a {
-    color: rgb(var(--black));
-    text-decoration: none;
-    font-weight: 500;
-  }
-
-  .internal-links a:hover {
-    text-decoration: underline;
-  }
-
-  .social-links {
-    display: flex;
-    gap: 0.5em;
-  }
-
-  .social-links a {
-    color: rgb(var(--black));
-    text-decoration: none;
-    display: flex;
+    gap: 1.5rem;
     align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: rgba(var(--black), 0.05);
-    transition: background 0.2s ease;
   }
 
-  .social-links a:hover {
-    background: rgba(var(--black), 0.1);
-    color: var(--accent);
+  .nav-links a {
+    color: var(--color-text);
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: color 0.2s ease;
+  }
+
+  .nav-links a:hover {
+    color: var(--color-primary);
   }
 
   @media (max-width: 768px) {
@@ -127,6 +106,10 @@ const { title = SITE_TITLE, iconPath } = Astro.props;
     
     .controls {
       gap: 0.5rem;
+    }
+
+    .nav-links {
+      display: none;
     }
   }
 </style> 

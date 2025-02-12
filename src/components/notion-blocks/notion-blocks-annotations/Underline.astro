@@ -25,6 +25,28 @@ const { richText } = Astro.props
   )
 }
 
+<style>
+  u {
+    text-decoration: none;
+    border-bottom: 1px solid var(--color-text);
+    padding-bottom: 1px;
+    opacity: 0.9;
+    transition: all 0.3s ease;
+  }
+
+  u:hover {
+    border-bottom-color: var(--color-primary);
+    opacity: 1;
+  }
+
+  @media (max-width: 640px) {
+    u {
+      border-bottom-width: 0.5px;
+      padding-bottom: 0.5px;
+    }
+  }
+</style>
+
 <!--
   改善点:
     - Propsのインターフェース定義をより具体的にする (例: RichText型の中身を定義)

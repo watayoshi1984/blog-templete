@@ -1,6 +1,6 @@
 ---
 import katex from 'katex'
-import { RichText } from '../../lib/interfaces.ts'
+import type { RichText } from '../../lib/interfaces.ts'
 import Bold from './notion-blocks-annotations/Bold.astro'
 import Italic from './notion-blocks-annotations/Italic.astro'
 import Strikethrough from './notion-blocks-annotations/Strikethrough.astro'
@@ -15,6 +15,16 @@ export interface Props {
 }
 
 const { richText } = Astro.props
+
+// 全角文字を半角に変換する関数
+function convertToHalfWidth(str: string): string {
+  return str.replace(/[Ａ-Ｚａ-ｚ０-９]/g, function(s) {
+    return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+  })
+  .replace(/[＾]/g, '^')
+  .replace(/[．]/g, '.')
+  .replace(/[−]/g, '-');
+}
 ---
 
 <Anchor richText={richText}>
@@ -48,7 +58,7 @@ const { richText } = Astro.props
                             {richText.Equation && (
                               <span
                                 set:html={katex.renderToString(
-                                  richText.Equation.Expression,
+                                  convertToHalfWidth(richText.Equation.Expression),
                                   { throwOnError: false }
                                 )}
                               />

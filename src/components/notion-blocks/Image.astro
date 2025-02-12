@@ -25,6 +25,7 @@ if (image && !import.meta.env.DEV) {
     optimizedImage = await optimizeImage(image);
   } catch (error) {
     console.error('画像の最適化に失敗しました:', error);
+    optimizedImage = null;
   }
 }
 
@@ -89,21 +90,43 @@ const imageSizes = `
 <style>
   .image {
     display: flex;
-    margin: 0.2rem auto 0;
+    margin: 1.5rem auto;
     width: 100%;
   }
+
   .image > div {
     margin: 0 auto;
     width: 100%;
   }
+
   .image > div > div {
     width: 100%;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
   }
+
   .notion-image {
     display: block;
     max-width: 100%;
     width: 100%;
     height: auto;
     object-fit: contain;
+    transition: transform 0.3s ease;
+  }
+
+  .image a:hover .notion-image {
+    transform: scale(1.02);
+  }
+
+  @media (max-width: 640px) {
+    .image {
+      margin: 1rem auto;
+    }
+
+    .image > div > div {
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-sm);
+    }
   }
 </style>

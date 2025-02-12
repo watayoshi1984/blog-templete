@@ -56,6 +56,7 @@ import type {
 } from '../interfaces'
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 import { Client, APIResponseError } from '@notionhq/client'
+import path from 'path'
 
 console.log('NOTION_API_SECRET:', NOTION_API_SECRET)
 console.log('DATABASE_ID:', DATABASE_ID)
@@ -382,59 +383,71 @@ export async function getAllTags(): Promise<SelectProperty[]> {
 }
 
 export async function downloadFile(url: URL) {
-  console.log('Attempting to download file from:', url.toString());
   try {
-    const res = await axios({
-      method: 'get',
-      url: url.toString(),
+    const response = await axios.get(url.toString(), {
+      responseType: 'arraybuffer',
       timeout: REQUEST_TIMEOUT_MS,
-      responseType: 'stream',
       maxRedirects: 5,
-      validateStatus: (status) => status === 200,
+      validateStatus: (status) => status >= 200 && status < 300
     });
 
-    if (!res || res.status !== 200) {
-      console.error('Failed to download file:', url.toString(), 'Status:', res?.status);
-      return Promise.resolve();
-    }
+    // URLパスをデコードし、ファイル名を安全な形式に変換
+    const urlPath = decodeURIComponent(url.pathname);
+    const originalFileName = path.basename(urlPath);
+    // ファイル名を英数字とハイフン、アンダースコアのみに制限
+    const safeFileName = originalFileName
+      .replace(/[^a-zA-Z0-9-_.]/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/\.\./g, '-');  // セキュリティ対策
+    const dirPath = path.join(process.cwd(), 'public', 'notion', path.dirname(urlPath));
+    const filePath = path.join(dirPath, safeFileName);
 
-    const dir = './public/notion/' + url.pathname.split('/').slice(-2)[0];
-    console.log('Creating directory:', dir);
+    // ディレクトリが存在しない場合は作成
     try {
-      fs.mkdirSync(dir, { recursive: true });
+      await fs.promises.mkdir(dirPath, { recursive: true });
+      console.log('Created directory:', dirPath);
     } catch (err) {
-      console.error('Failed to create directory:', dir, err);
-      return Promise.resolve();
+      console.error('Failed to create directory:', dirPath, err);
+      throw err;
     }
 
-    const filename = decodeURIComponent(url.pathname.split('/').slice(-1)[0]);
-    const filepath = `${dir}/${filename}`;
-    console.log('Writing file to:', filepath);
+    console.log('Writing file to:', filePath);
 
-    const writeStream = createWriteStream(filepath);
-    const rotate = sharp().rotate();
-
-    let stream = res.data;
-
-    if (res.headers['content-type']?.toLowerCase().includes('image/jpeg')) {
-      stream = stream.pipe(rotate);
+    // 既に最適化済みの場合はスキップ
+    if (filePath.includes('.optimized') || filePath.includes('.processed')) {
+      console.log('Skipping already optimized file:', filePath);
+      return `/notion/${path.dirname(urlPath)}/${safeFileName}`;
     }
 
     try {
-      await pipeline(stream, new ExifTransformer(), writeStream);
-      console.log('Successfully downloaded:', filepath);
-      return Promise.resolve();
+      // まず生のファイルを保存
+      await fs.promises.writeFile(filePath, response.data);
+      
+      // 画像の最適化
+      const optimizedFilePath = filePath + '.processed';
+      await sharp(filePath)
+        .rotate() // EXIFに基づいて自動回転
+        .resize(1200, 1200, {
+          fit: 'inside',
+          withoutEnlargement: true
+        })
+        .toFile(optimizedFilePath);
+      
+      // 元のファイルを最適化されたバージョンに置き換え
+      await fs.promises.unlink(filePath);
+      await fs.promises.rename(optimizedFilePath, filePath);
+      
+      console.log('Successfully downloaded and optimized:', filePath);
+      return `/notion/${path.dirname(urlPath)}/${safeFileName}`;
     } catch (err) {
-      console.error('Failed to process stream:', err);
-      writeStream.end();
-      if (fs.existsSync(filepath)) {
-        fs.unlinkSync(filepath);
-      }
-      return Promise.resolve();
+      console.error('Failed to process file:', filePath, err);
+      // エラーが発生した場合でも、ダウンロードしたファイルはそのまま使用
+      return `/notion/${path.dirname(urlPath)}/${safeFileName}`;
     }
-  } catch (err) {
-    console.error('Failed to download file:', url.toString(), err);
-    return Promise.resolve();
+  } catch (error) {
+    console.error('Failed to download file from', url.toString(), ':', error);
+    // エラーが発生した場合は元のURLを返す
+    return url.toString();
   }
 }
 
