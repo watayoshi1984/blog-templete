@@ -27,8 +27,11 @@ const [posts, rankedPosts, tags, numberOfPages] = await Promise.all([
   getNumberOfPages(),
 ])
 ---
-<Layout title="NEXT Nurse｜3回転職を経験した看護師による仕事で悩む若手看護師に捧げるキャリアブログ" description="看護師として3回の転職経験を持つ現役ナースが、若手看護師の悩みやキャリアについて発信するブログです。転職、メンタルヘルス、スキルアップなど、実践的なアドバイスを提供しています。" path="/" ogImage="/default-og-image.png">
+<Layout title="NEXT Nurse | 1～3年目看護師のキャリア応援ブログ" description="転職経験3回の現役ナース「カンナ」が、1～3年目の看護師さんのキャリア形成をサポートするブログです。" path="/" ogImage="/default-og-image.png">
   <div slot="main" class={styles.main}>
+    <h1>NEXT Nurse</h1>
+    <p>転職経験3回の現役ナースのブログ</p>
+    <p>1～3年目の看護師さん向けに、キャリア形成のヒントや職場での悩み解決のコツをお届けします。</p>
     {
       posts.length === 0 ? (
         <NoContents contents={posts} />
@@ -52,8 +55,8 @@ const [posts, rankedPosts, tags, numberOfPages] = await Promise.all([
   </div>
 
   <div slot="aside" class={styles.aside}>
-    <BlogPostsLink heading="最新の記事" posts={rankedPosts} />
-    <BlogTagsLink heading="カテゴリー一覧" tags={tags.filter(tag => tag.color === 'brown' || tag.color === 'orange' || tag.color === 'yellow' || tag.color === 'blue' || tag.color === 'red')} />
-    <BlogTagsLink heading="タグ一覧" tags={tags.filter(tag => tag.color === 'green' || tag.color === 'purple' || tag.color === 'gray')} />
+    <BlogPostsLink heading="おすすめ記事" posts={rankedPosts} />
+    <BlogTagsLink heading="カテゴリー" tags={tags.filter(tag => tag.color === 'brown' || tag.color === 'orange' || tag.color === 'yellow' || tag.color === 'blue' || tag.color === 'red')} />
+    <BlogTagsLink heading="タグ" tags={tags.filter(tag => tag.color === 'green' || tag.color === 'purple' || tag.color === 'gray')} />
   </div>
 </Layout>
